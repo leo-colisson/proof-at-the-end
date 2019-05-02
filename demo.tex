@@ -1,11 +1,11 @@
 \documentclass{article}
 
 \usepackage{amssymb, amsthm, amsmath}
-\usepackage{hyperref}
+% \usepackage{hyperref}
 % Load the package (put the proof-at-the-end.sty file in the working directory)
 \usepackage{proof-at-the-end} % with default options...
 % Or by putting in the 'conf' option the default configuration you want:
-%\usepackage[conf={no link to proof}]{proof-at-the-end}
+% \usepackage[conf={normal}]{proof-at-the-end}
 
 %%% You can also easily modify the defaults in other parts of the code using:
 % \pgfkeys{/prAtEnd/custom defaults/.style={
@@ -23,7 +23,7 @@
 \newtheorem{thm}{Theorem}[section]
 \newtheorem*{thm*}{Theorem}
 \providecommand*\thmautorefname{Theorem}
-% Lemmas
+% Lemmata
 \newtheorem{lemma}[thm]{Lemma}
 \newtheorem*{lemma*}{Lemma}
 \providecommand*\lemmaautorefname{Lemma}
@@ -42,7 +42,7 @@
 
 And I can refer to my theorems using classic labels, like in \autoref{thm:ilikelabels}.
 
-\theoremProofEnd[category=greattheorem]{thm}[Different categories]{
+\theoremProofEnd[category=greattheorem, end]{thm}[Different categories]{
   You can also create several categories, and put the proofs in different sections.
 }{ %%
   See, I am in another section! And I refer to \autoref{thm:ilikelabels} even in the proof.

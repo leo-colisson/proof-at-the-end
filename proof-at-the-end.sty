@@ -2,6 +2,7 @@
 \ProvidesPackage{proof-at-the-end}[2019/05/02 A package to move proofs in appendix]
  
 \RequirePackage{etoolbox}
+\RequirePackage{hyperref}
 \RequirePackage{thmtools}
 \RequirePackage{thm-restate}
 \RequirePackage{catchfile}
@@ -18,7 +19,7 @@
 %% https://tex.stackexchange.com/questions/109747/put-all-package-options-into-one-command
 %% Forward the options list to the command \pratendOptdefconf
 %% in order to use:
-%% \usepackage[conf={id=normal, coucou=42}]{proof-at-the-end}
+%% \usepackage[conf={normal}]{proof-at-the-end}
 \SetupKeyvalOptions{
   family=pratendOpt,
   prefix=pratendOpt,
@@ -102,25 +103,7 @@
   %% current location and in appendix
   both/.is if=both,
   no both/.style={both=false},
-  %%%% Defaults, alias, and styles
-  defaults/.style={
-    no proof here,
-    no all end,
-    proof end,
-    link to proof,
-    no restate,
-    category=defaultcategory,
-    no both,
-    text link={See \hyperref[proof:prAtEnd\pratendcountercurrent]{proof} on page~\pageref{proof:prAtEnd\pratendcountercurrent}},
-    text proof={Proof of \string\autoref{thm:prAtEnd\pratendcountercurrent}},
-    restate command=pratenddummymacro,
-  },
-  custom defaults/.style={
-    %% you can put in this style any overwrite of the defaults
-    %% or use directly the options of the package like
-    %% \usepackage[conf={no link to proof}]{proof-at-the-end}
-    \pratendOptconf
-  },
+  %%%% Alias and styles
   normal/.style={
     proof here,
     no all end,
@@ -128,6 +111,15 @@
     no link to proof,
     no restate,
     no both,
+  },
+  proof at the end/.style={
+    no proof here,
+    no all end,
+    proof end,
+    no both,
+  },
+  end/.style={
+    proof at the end
   },
   debug/.style={
     proof here
@@ -137,6 +129,22 @@
   },
   stared/.style={ % Remove 
     text proof={\string\mbox{\string\hyperref[thm:prAtEnd\pratendcountercurrent]{\proofname}}},
+  },
+  %%%% Defaults
+  defaults/.style={
+    end,
+    link to proof,
+    no restate,
+    category=defaultcategory,
+    text link={See \hyperref[proof:prAtEnd\pratendcountercurrent]{proof} on page~\pageref{proof:prAtEnd\pratendcountercurrent}},
+    text proof={Proof of \string\autoref{thm:prAtEnd\pratendcountercurrent}},
+    restate command=pratenddummymacro,
+  },
+  custom defaults/.style={
+    %% you can put in this style any overwrite of the defaults
+    %% or use directly the options of the package like
+    %% \usepackage[conf={no link to proof}]{proof-at-the-end}
+    \pratendOptconf
   },
 }
 
