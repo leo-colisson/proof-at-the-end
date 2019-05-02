@@ -12,6 +12,13 @@ This small package aims to provide a way to easily move proofs in the appendix. 
 - Easily change the defaults, and create your own styles
 - Change the text of the link, for example to use another language
 
+## Demo
+
+If you just want to see an example of what you can do, you can directly open the file `demo.pdf` to see what is possible, or generate it with
+
+    git clone https://github.com/tobiasBora/proof-at-the-end.git
+    pdflatex demo.tex
+
 ## Quickstart
 
 To use this package, if it's not yet in your CTAN distribution, first download the `proof-at-the-end.sty` file and insert it in the root of your project with (you can also clone this repository if you prefer):
@@ -139,7 +146,7 @@ If you want to (re)state a theorem *before* its definition (say in the introduct
 
 ## List of options:
 
-Here is the list of options and alias supported. Most options have a `no` version, with `no ` written before:
+Here is the list of options supported. Most options have a `no` version, with `no ` written before. Note that you may prefer to use directly the alias/styles (see next paragraph).
 
 - `category`: category of the proof (if you want to put proofs at several places), can be anything
 - `proof here`/`no proof here`: put (or not) the proof in the main text
@@ -147,66 +154,21 @@ Here is the list of options and alias supported. Most options have a `no` versio
 - `restate`/`no restate`: restate the theorem in appendix
 - `link to proof`/`no link to proof`: Display a link to the proof in the main text
 - `all end`/`no all end`: put the theorem and proof only in appendix
-- `text link`: text of the link to the proof, defaults to 
+- `text link`: text of the link to the proof, defaults to `{See \hyperref[proof:prAtEnd\pratendcountercurrent]{proof} on page~\pageref{proof:prAtEnd\pratendcountercurrent}}`
+- `text proof`: text displayed in place of "Proof" in the appendix. Defaults to `{Proof of \string\autoref{thm:prAtEnd\pratendcountercurrent}}`
+- `restate command`: name of a unique macro (without backslash) that will be defined as an alias to restate the theorem wherever you want
+- `restated before`: if the theorems has been stated before (with `\theoremProofEndRestateBefore`), then we just need to put the restate command in place of the theorem, and enable this option
+- `both`/`no both`: only for `\textInAppendix`, specifies that the text must be present in both the main text and the appendix.
 
-  %% Text of proof. Make sure also to "\renewcommand*{\proofname}{Name of the proof}"
-  %% to make sure the proof for normal theorems are changed
-  text proof/.code={\def\pratendtextproof{#1}},
-  %% Custom restate command
-  restate command/.code={\edef\pratendcustomrestate{#1}},
-  %% (Re)stated before
-  %% If the theorems has been stated before, then we just need to put the restate command in
-  %% place of the argument, and we set this value to true:
-  restated before/.is if=restatedbefore,
-  no restated before/.style={restated before=false},
-  %% In star version, we don't want 
-  %% Put the text (defined only for \textInAppendix) in both the
-  %% current location and in appendix
-  both/.is if=both,
-  no both/.style={both=false},
-  %%%% Alias and styles
-  normal/.style={
-    proof here,
-    no all end,
-    no proof end,
-    no link to proof,
-    no restate,
-    no both,
-  },
-  proof at the end/.style={
-    no proof here,
-    no all end,
-    proof end,
-    no both,
-  },
-  end/.style={
-    proof at the end
-  },
-  debug/.style={
-    proof here
-  },
-  no link to theorem/.style={ % Remove the link to the theorem
-    text proof={\proofname},
-  },
-  stared/.style={ % Remove 
-    text proof={\string\mbox{\string\hyperref[thm:prAtEnd\pratendcountercurrent]{\proofname}}},
-  },
-  %%%% Defaults
-  defaults/.style={
-    end,
-    link to proof,
-    no restate,
-    category=defaultcategory,
-    text link={See \hyperref[proof:prAtEnd\pratendcountercurrent]{proof} on page~\pageref{proof:prAtEnd\pratendcountercurrent}},
-    text proof={Proof of \string\autoref{thm:prAtEnd\pratendcountercurrent}},
-    restate command=pratenddummymacro,
-  },
-  custom defaults/.style={
-    %% you can put in this style any overwrite of the defaults
-    %% or use directly the options of the package like
-    %% \usepackage[conf={no link to proof}]{proof-at-the-end}
-    \pratendOptconf
-  },
+Here are all the alias/styles (you can create you own as well), they are practical to quickly define a behaviours, but are made of the basic options listed above:
+
+- `normal`: like a 'normal' theorem, without any proof in the appendix, and with a proof displayed. Shortcut for `proof here, no all end, no proof end, no link to proof, no restate, no both`.
+- `proof at the end` (or just `end`): theorems whose proof need to go in the appendix. Shorcut for `no proof here, no all end, proof end, no both`.
+- `debug`: make sure the proof is written in the main text as well (alias to `proof here`), it is quite practical to use when you write a proof to be able to use synctex features to move between the pdf and the file.
+- `no link to theorem`: Remove the link from the proof to the theorem, alias of `text proof={\proofname}`
+- `stared` (or `no number`): when you use the stared version of a theorem you don't have any number, so autoref fails to write a nice link to the theorem. This option changes the text of "Proof", by keeping the link but writting only `Proof`. Defaults to `text proof={\string\mbox{\string\hyperref[thm:prAtEnd\pratendcountercurrent]{\proofname}}}`
+- `defaults`: default style that is loaded before anything else that configure by default a link to the proof, put the proof in appendix, use the category `defaultcategory`. It is an alias of `end, link to proof, no restate, category=defaultcategory, text link={See \hyperref[proof:prAtEnd\pratendcountercurrent]{proof} on page~\pageref{proof:prAtEnd\pratendcountercurrent}}, text proof={Proof of \string\autoref{thm:prAtEnd\pratendcountercurrent}}, restate command=pratenddummymacro`.
+- `custom defaults`: style that is empty (contains only the option you sent to the package) that is overwritten and loaded right after `defaults`. Useful if you want to overwrite the default.
 
 
 
