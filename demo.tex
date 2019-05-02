@@ -1,0 +1,163 @@
+\documentclass{article}
+
+\usepackage{amssymb, amsthm, amsmath}
+\usepackage{hyperref}
+% Load the package (put the proof-at-the-end.sty file in the working directory)
+\usepackage{proof-at-the-end} % with default options...
+% Or by putting in the 'conf' option the default configuration you want:
+%\usepackage[conf={no link to proof}]{proof-at-the-end}
+
+%%% You can also easily modify the defaults in other parts of the code using:
+% \pgfkeys{/prAtEnd/custom defaults/.style={
+%     category=greattheorem
+%   }
+% }
+%%% Or create new styles to apply:
+% \pgfkeys{/prAtEnd/great category/.style={
+%     category=greattheorem
+%   }
+% }
+
+%% Define your theorem/lemma/... environments the way you want:
+% Theorems
+\newtheorem{thm}{Theorem}[section]
+\newtheorem*{thm*}{Theorem}
+\providecommand*\thmautorefname{Theorem}
+% Lemmas
+\newtheorem{lemma}[thm]{Lemma}
+\newtheorem*{lemma*}{Lemma}
+\providecommand*\lemmaautorefname{Lemma}
+
+
+\begin{document}
+
+\section{First section}
+
+% And use \theoremProofEnd[<package options>]{theorem environment name}[Title]{Theorem}{Optional proof}
+\theoremProofEnd{thm}[Yes I can have a title]{\label{thm:ilikelabels}
+  Simplicity is luxury, I am a default theorem.
+}{
+  Let's be simple
+}
+
+And I can refer to my theorems using classic labels, like in \autoref{thm:ilikelabels}.
+
+\theoremProofEnd[category=greattheorem]{thm}[Different categories]{
+  You can also create several categories, and put the proofs in different sections.
+}{ %%
+  See, I am in another section! And I refer to \autoref{thm:ilikelabels} even in the proof.
+}
+
+\theoremProofEnd[restate]{thm}[I am restatable]{ %% Theorem
+  I am a restatable theorem, go in Appendix you will see ;-)
+}{ %% Proof
+  I am a proof of a restatable theorem.
+}
+
+
+\theoremProofEnd[normal]{thm}{
+  You can easily turn it back into a normal theorem!
+}{ %% Proof
+  And keep the proof with you!
+}
+
+You can also put comments that appear only in the appendix.
+
+\textInAppendix{See, I am a simple comments with math $\delta = b^2-ac$ and references \autoref{thm:mytheoremattheend}.}
+
+\textInAppendix[both]{Or that appears in both and with references \autoref{thm:mytheoremattheend}!}
+
+\theoremProofEnd[proof here]{thm}{
+  And you can duplicate the proof, here AND in appendix ;)
+}{ %% Proof
+  I am a proof that is everywhere, practical if you want to use synctex while you write the proof ;)
+}
+
+\theoremProofEnd{lemma}{
+  You can mix it with lemmas... Or any other theorem-like environment easily!
+}{ %%
+  See, I'm the proof of a lemma!
+}
+
+And also you can put some proofs only at the end, like for \autoref{thm:mytheoremattheend}!
+\theoremProofEnd[all end]{thm}{\label{thm:mytheoremattheend}
+  $\delta = b^2-4ac$
+  You can also put theorems only at the end.
+}{ %%
+  See, I'm the proof of a lemma that is only at the end!.
+}
+
+You can also remove the link to the theorem:
+\theoremProofEnd[no link to theorem, restate]{thm}{
+  I don't like links in proofs.
+}{ %%
+  Yes, I like being lost, but not too lost, so I prefer to restate as well!
+}
+
+Or keep the link, but remove the reference (practical for stared versions):
+\theoremProofEnd[stared]{thm*}{
+  I don't like numbers.
+}{ %%
+  Yes, I hate numbers, but I like links.
+}
+
+
+\pgfkeys{/prAtEnd/french/.style={
+    text link={Voir \hyperref[proof:prAtEnd\pratendcountercurrent]{preuve} à la page~\pageref{proof:prAtEnd\pratendcountercurrent}},
+    text proof={Preuve de \string\autoref{thm:prAtEnd\pratendcountercurrent}}
+  }
+}
+\theoremProofEnd[french]{thm}{ %% See how "french" is defined just above
+  Change the text/languages of the link: Il est même possible de changer la langue du texte du lien!
+}{
+Si c'est pas beau ;)
+}
+
+\theoremProofEnd[]{thm}[Yes I can have no proof]{
+  Proof is useless. You can do do it.
+}
+
+\theoremProofEnd[restate command=mymanualrestate]{thm}[Manual restate]{
+  A theorem can be manually restated
+}{
+  Use restate command for that! (see \autoref{sec:manualrestate} for an example)
+}
+
+
+\section{Section with restate before theorem}\label{sec:restatebefore}
+
+\theoremProofEndRestateBefore{thm}[Title]{laterrestatable}{\label{thm:laterrestatable}
+  This theorem has been introduced in \autoref{sec:restatebefore} before the real definition, but the real definition is in \autoref{sec:restateafter}, more precisely here: \autoref{thm:laterrestatable}.
+}
+
+\theoremProofEnd{thm}{
+  And this is a normal theorem
+}{
+  With a normal proof
+}
+
+
+\section{Section with late theorems}\label{sec:restateafter}
+\theoremProofEnd[restated before]{thm}{laterrestatable}{
+  To state a theorem before the initial definition, use theoremProofEndRestateBefore where you first want to state the theorem, with a unique name in the second mandatory argument, and when you want to insert the theorem for the second time, use the usual theoremProofEnd command with the same unique name as before in place of the theorem definition.
+}
+
+\section{Section with standard proofs}
+% \verbatiminput{defaultcategory}
+\printProofs
+
+\section{Section with important proofs only}
+\printProofs[greattheorem]
+
+\section{Section with manual restate}\label{sec:manualrestate}
+
+I like to manually restate theorems:
+\mymanualrestate*
+
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

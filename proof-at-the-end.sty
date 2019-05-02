@@ -1,0 +1,253 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{proof-at-the-end}[2019/05/02 A package to move proofs in appendix]
+ 
+\RequirePackage{etoolbox}
+\RequirePackage{thmtools}
+\RequirePackage{thm-restate}
+\RequirePackage{catchfile}
+\RequirePackage{pgfkeys}
+\RequirePackage{xparse}
+
+% \DeclareOption{red}{\renewcommand{\wordcolour}{sharelatexcolour}}
+% \DeclareOption{blue}{\renewcommand{\wordcolour}{mybluecolour}}
+% \DeclareOption*{\PackageWarning{examplepackage}{Unknown ‘\CurrentOption’}}
+% \ProcessOptions\relax
+
+\RequirePackage{kvoptions}
+
+%% https://tex.stackexchange.com/questions/109747/put-all-package-options-into-one-command
+%% Forward the options list to the command \pratendOptdefconf
+%% in order to use:
+%% \usepackage[conf={id=normal, coucou=42}]{proof-at-the-end}
+\SetupKeyvalOptions{
+  family=pratendOpt,
+  prefix=pratendOpt,
+}
+\DeclareStringOption{conf}
+\DeclareLocalOptions{conf}% \pratendOptdefconf contains the proof
+\ProcessKeyvalOptions*
+
+
+\newwrite\appendwrite
+\newcommand*\appendtofile[2]{%
+  \begingroup
+  \IfFileExists{#1}%
+  {\CatchFileDef{\filecontent}{#1}{\catcode`\\=12 \endlinechar=`^^J\catcode\endlinechar=12\relax}}% keep existing end-of-lines
+  {\let\filecontent\empty}%
+  \immediate\openout\appendwrite=#1\relax
+  \immediate\write\appendwrite{\detokenize\expandafter{\filecontent}#2}%
+  \immediate\closeout\appendwrite
+  \endgroup
+}
+%% This functions takes one input: the category (without .tex),
+%% If it's the first time we write in this
+%% category file, it "blanks" it.
+\def\prefixPrAtEndFiles{pratend}
+\newcommand*\eraseIfNeeded[1]{
+  % A macro 'pratendmacrocat{category}' is created to check
+  % if it's the first time we write in this category file.
+  \edef\macroname{pratendmacrocat#1}
+  \ifcsdef{\macroname}{% The macro exists, nothing to do
+  }{ % The macro does not exists, create it, and empty the file
+    \expandafter\def\csname \macroname\endcsname{true}
+    \immediate\openout\appendwrite=\prefixPrAtEndFiles#1.tex
+    \immediate\write\appendwrite{}
+    \immediate\closeout\appendwrite
+  }  
+}
+
+\newif\ifproofhere
+\newif\ifproofend
+\newif\ifrestatethm
+\newif\iflinktoproof
+\newif\ifboth
+\newif\ifallattheend
+\newif\ifrestatedbefore
+\pgfkeys{
+  /prAtEnd/.cd, %% Proof at end will be the main path
+  %% Category of the proof (if you want to put proofs
+  %% at several places), can be anything
+  category/.initial=defaultcategory,
+  category/.store in=\category,
+  category/.get=\category,
+  %% Display the proof in the main part
+  proof here/.is if=proofhere,
+  no proof here/.style={proof here=false}, % alias
+  %% Display the proof when using \printProofs
+  proof end/.is if=proofend,
+  no proof end/.style={proof end=false},
+  %% Restate the theorem when using \printProofs
+  restate/.is if=restatethm,
+  no restate/.style={restate=false},
+  %% Put a link to the proof after the theorem
+  link to proof/.is if=linktoproof,
+  no link to proof/.style={link to proof=false},
+  %% Put the theorem and proof only in appendix
+  all end/.is if=allattheend,
+  no all end/.style={all end=false},
+  %% Text of link
+  text link/.code={\def\pratendtextlink{#1}},
+  %% Text of proof. Make sure also to "\renewcommand*{\proofname}{Name of the proof}"
+  %% to make sure the proof for normal theorems are changed
+  text proof/.code={\def\pratendtextproof{#1}},
+  %% Custom restate command
+  restate command/.code={\edef\pratendcustomrestate{#1}},
+  %% (Re)stated before
+  %% If the theorems has been stated before, then we just need to put the restate command in
+  %% place of the argument, and we set this value to true:
+  restated before/.is if=restatedbefore,
+  no restated before/.style={restated before=false},
+  %% In star version, we don't want 
+  %% Put the text (defined only for \textInAppendix) in both the
+  %% current location and in appendix
+  both/.is if=both,
+  no both/.style={both=false},
+  %%%% Defaults, alias, and styles
+  defaults/.style={
+    no proof here,
+    no all end,
+    proof end,
+    link to proof,
+    no restate,
+    category=defaultcategory,
+    no both,
+    text link={See \hyperref[proof:prAtEnd\pratendcountercurrent]{proof} on page~\pageref{proof:prAtEnd\pratendcountercurrent}},
+    text proof={Proof of \string\autoref{thm:prAtEnd\pratendcountercurrent}},
+    restate command=pratenddummymacro,
+  },
+  custom defaults/.style={
+    %% you can put in this style any overwrite of the defaults
+    %% or use directly the options of the package like
+    %% \usepackage[conf={no link to proof}]{proof-at-the-end}
+    \pratendOptconf
+  },
+  normal/.style={
+    proof here,
+    no all end,
+    no proof end,
+    no link to proof,
+    no restate,
+    no both,
+  },
+  debug/.style={
+    proof here
+  },
+  no link to theorem/.style={ % Remove the link to the theorem
+    text proof={\proofname},
+  },
+  stared/.style={ % Remove 
+    text proof={\string\mbox{\string\hyperref[thm:prAtEnd\pratendcountercurrent]{\proofname}}},
+  },
+}
+
+
+\newcounter{counterAllProofEnd}
+\stepcounter{counterAllProofEnd}
+\NewDocumentCommand\theoremProofEndRestateBefore{mO{}m+m}{
+  %% This function is only for the specific case when you want to restate the theorem
+  %% before the actual definition.
+  %% - The first (mandatory) argument is for the type of theorem
+  %% - The second (facultative) argument is for the title of the theorem
+  %% - The third (mandatory) argument is a UNIQUE name that will be used to store the counter
+  %%   that you need to give back to theoremProofEnd in place of the theorem
+  %% - The fourth (mandatory) argument is the theorem
+  \edef\currcounterval{\roman{counterAllProofEnd}}
+  \edef\temprest{\noexpand\begin{restatable*}[#2]{#1}{prAtEndRestate\currcounterval}}%
+  \expandafter\edef\csname #3\endcsname{\currcounterval}%
+  \temprest%
+    \label{thm:prAtEnd\currcounterval}%
+    \show\currcounterval%
+    #4%
+  \end{restatable*}%
+  \stepcounter{counterAllProofEnd}%
+}
+\NewDocumentCommand\theoremProofEnd{O{}mO{}+m+g}{
+  % The first facultative argument will be the options: type of proof you want, the file to which you want to write...
+  % The first mandatory option is the type of the theorem (thm,lemma,...)
+  % The second facultative argument will be the title
+  % the second mandatory option is the theorem (will \label inside eventually)
+  % the last mandatory option is the proof
+  \pgfkeys{%
+    /prAtEnd/.cd,
+    defaults,
+    custom defaults,
+    #1
+  }%
+  \edef\temprest{\noexpand\begin{restatable}[#3]{#2}{prAtEndRestate\roman{counterAllProofEnd}}}%
+  \unless\ifallattheend%
+    \ifrestatedbefore% Restate the theorem if it was stated before
+      \edef\pratendcountercurrent{\csname #4\endcsname} % Store the current (alpha value of the) counter
+      \csname prAtEndRestate\pratendcountercurrent\endcsname % Restate the theorem
+      \show\laterrestatable
+    \fi%
+    \unless\ifrestatedbefore% Otherwise just state the theorem in a restatable data
+      \temprest%
+        \label{thm:prAtEnd\roman{counterAllProofEnd}}%
+        #4%
+      \end{restatable}%
+      \edef\pratendcountercurrent{\roman{counterAllProofEnd}} % Store the current (alpha value of the) counter
+    \fi%
+    \show\pratendcountercurrent%  
+    \expandafter\edef\csname \pratendcustomrestate\endcsname{\noexpand\csname prAtEndRestate\pratendcountercurrent\endcsname}%
+    \IfNoValueTF{#5}{}{%
+      \iflinktoproof%
+        \pratendtextlink{}%
+      \fi%
+      \ifproofhere%
+        \begin{proof}%
+          #5%
+        \end{proof}%
+      \fi%
+    }%
+  \fi%
+  \eraseIfNeeded{\category}%
+  \unless\ifallattheend%
+    \ifrestatethm%
+      \appendtofile{\prefixPrAtEndFiles\category.tex}{\string\prAtEndRestate\pratendcountercurrent*}
+    \fi%
+  \fi%
+  \ifallattheend%
+    \appendtofile{\prefixPrAtEndFiles\category.tex}{\string\begin{restatable}[#3]{#2}{prAtEndRestate\pratendcountercurrent}\string\label{thm:prAtEnd\pratendcountercurrent}\detokenize{#4}\string\end{restatable}}%
+  \fi%
+  \IfNoValueTF{#5}{}{%
+    \ifproofend%
+      \appendtofile{\prefixPrAtEndFiles\category.tex}{\string\begin{proof}[\pratendtextproof]\string\phantomsection\string\label{proof:prAtEnd\pratendcountercurrent}\detokenize{#5}\string\end{proof}}%
+    \fi%
+  }%
+  \stepcounter{counterAllProofEnd}%
+}
+
+\NewDocumentCommand\textInAppendix{O{}+m}{
+  % Use it to put normal text in Appendix.
+  \pgfkeys{
+    /prAtEnd/.cd,
+    defaults,
+    #1
+  }
+  \ifboth%
+  #2
+  \fi%
+  \eraseIfNeeded{\category}
+  \appendtofile{\prefixPrAtEndFiles\category.tex}{\detokenize{#2}}%
+}
+
+\NewDocumentCommand\printProofs{O{defaultcategory}}{
+  \input{\prefixPrAtEndFiles#1.tex}
+}
+
+
+%%% You can easily modify the defaults:
+% \pgfkeys{/prAtEnd/custom defaults/.style={
+%     category=greattheorem
+%   }
+% }
+%%% Or create new styles to apply:
+% \pgfkeys{/prAtEnd/great category/.style={
+%     category=greattheorem
+%   }
+% }
+
+
+\endinput
+
+
