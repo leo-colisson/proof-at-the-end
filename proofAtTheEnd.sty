@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{proofend}[2019/05/02 A package to move proofs in appendix]
+\ProvidesPackage{proofAtTheEnd}[2019/05/06 A package to move proofs in appendix]
  
 \RequirePackage{etoolbox}
 \RequirePackage{hyperref}
@@ -20,7 +20,7 @@
 %% https://tex.stackexchange.com/questions/109747/put-all-package-options-into-one-command
 %% Forward the options list to the command \pratendOptdefconf
 %% in order to use:
-%% \usepackage[conf={normal}]{proof-at-the-end}
+%% \usepackage[conf={normal}]{proofAtTheEnd}
 \SetupKeyvalOptions{
   family=pratendOpt,
   prefix=pratendOpt,
@@ -150,7 +150,7 @@
   custom defaults/.style={
     %% you can put in this style any overwrite of the defaults
     %% or use directly the options of the package like
-    %% \usepackage[conf={no link to proof}]{proof-at-the-end}
+    %% \usepackage[conf={no link to proof}]{proofAtTheEnd}
     \pratendOptconf
   },
 }
