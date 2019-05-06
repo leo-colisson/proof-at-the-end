@@ -11,12 +11,24 @@ This small package aims to provide a way to easily move proofs in the appendix. 
 - Duplicate the proof in appendix and in the current section, practical to use synctex during the proof writting
 - Add comments that would appear only in the appendix (or in both body and appendix)
 - Move both the theorem and the proof completely in appendix
-- Easily change the defaults, and create your own styles
+- Easily change the defaults, and create your own styles/environments
+- Include sketch of proof in the main text, and full proof in appendix
 - Change the text of the link, for example to use another language
 - Have a nice environment-based commands in order to mimic the usual theorem/proof structure.
 
 
-NB: This project is hosted on github at https://github.com/leo-colisson/proof-at-the-end . Feel free to contribute, or read/copy-paste the documentation/examples from there.
+NB: This project is hosted on github at [https://github.com/leo-colisson/proof-at-the-end](https://github.com/leo-colisson/proof-at-the-end) . Feel free to contribute, report bugs, or read/copy-paste the documentation/examples from there.
+
+Disclaimer: This package is still in beta and not considered as stable.
+
+## Demo ##
+
+If you just want to see an example of what you can do, you can directly open the file `demo.pdf` to see what is possible, or generate it with
+
+```bash
+git clone https://github.com/leo-colisson/proof-at-the-end.git
+pdflatex demo.tex && pdflatex demo.tex
+```
 
 ## Quickstart ##
 
@@ -55,7 +67,7 @@ And inside your document, you can use the following syntax to create a new theor
 \begin{theoremEnd}[OPTIONS]{THEOREM ENVIRONMENT}[OPTIONAL TITLE]
     YOUR THEOREM, with eventually labels like \label{thm:OPTIONAL LABEL}
 \end{theoremEnd}
-\begin{proofEnd}
+\begin{proofEnd} %% Optional environment
     YOUR (OPTIONAL) PROOF
 \end{proofEnd}
 ```
@@ -85,18 +97,11 @@ NB: if you want to make sure all the references are linked correctly, make sure 
 
 Isn't it simple ?
 
-## Demo ##
+## Use cases
 
-If you just want to see an example of what you can do, you can directly open the file `demo.pdf` to see what is possible, or generate it with
+### Configuration, or how to use and create styles ###
 
-```bash
-git clone https://github.com/leo-colisson/proof-at-the-end.git
-pdflatex demo.tex && pdflatex demo.tex
-```
-
-## Configuration ##
-
-You can very easily configure this package, and how the theorems/proofs are displayed by providing a value in `OPTIONS`. For example, if you would like to keep the proof of a theorem in the main text, use the `normal` option:
+You can very easily configure this package, and choose how each theorem/proof must be displayed by providing a value in `OPTIONS`. For example, if you would like to keep the proof of a theorem in the main text like any normal theorem, use the `normal` option:
 
 ```latex
 \begin{theoremEnd}[normal]{thm}[A title]
@@ -140,7 +145,7 @@ You can also change the default configuration when you load the package by nesti
 
 Note also that it is also possible to give options to the `proofEnd` environment, but it is usually useless, as it will automatically pick the parameters from the last `theoremEnd` environment. However, if for some reasons you want to change the options of the proof only, you can do it (may be practical to write shortcuts), but do it as your own risks ;)
 
-## Categories, or how to move proofs in different sections ##
+### Categories, or how to move proofs in different sections ###
 
 Let's imagine that you have some proofs that are easy to do, and some proofs that are long but interesting. You may want to put the easy proofs in a different place that the long proofs. It is super easy to do, you just need to give a category name to the option `category` like here:
 
@@ -159,7 +164,7 @@ and give in the section where you would like to display the proofs the code this
 \printProofs[mylongproofs]
 ```
 
-## Comments ##
+### Comments ###
 
 You can also move some text in the appendix by using:
 
@@ -182,7 +187,7 @@ You can also use the environment notation like that:
 \end{textAtEnd}
 ```
 
-## Restate a theorem ##
+### Restate a theorem ###
 
 It is easy to restate a theorem in the appendix, to have both the theorem in the main text and in the appendix: just use the option `restate`:
 
@@ -215,7 +220,23 @@ If you want to (re)state a theorem *before* its definition (say in the introduct
 \end{proofEnd}
 ```
 
-## List of options: ##
+### Write a sketch of proof in the main text ###
+
+You can include a sketch of proof in the main text by simply adding a proof in between `theoremEnd` and `proofEnd`. An alias option `see full proof` can also be used to change the link into "See full proof on page X":
+
+```latex
+\begin{theoremEnd}[see full proof]{thm}
+  I can also write a sketch of proof, and put the full proof in appendix.
+\end{theoremEnd}
+\begin{proof}
+  Hint: look at the alias options.
+\end{proof}
+\begin{proofEnd}
+  You just use ``see full proof'' as an option
+\end{proofEnd}
+```
+
+## List of options ##
 
 Here is the list of fundamental options supported. Most options have a `no` version, with `no ` written before. Note that you may prefer to use directly the alias/styles (see next paragraph).
 
@@ -239,12 +260,24 @@ Here are all the alias/styles (you can create you own as well), they are practic
 - `proof at the end` (or just `end`): theorems whose proof need to go in the appendix. Shorcut for `no proof here, no all end, proof end, no both`.
 - `debug`: make sure the proof is written in the main text as well (alias to `proof here`), it is quite practical to use when you write a proof to be able to use synctex features to move between the pdf and the file.
 - `no link to theorem`: Remove the link from the proof to the theorem, alias of `text proof={\proofname}`
-- `stared` (or `no number`): when you use the stared version of a theorem you don't have any number, so autoref fails to write a nice link to the theorem. This option changes the text of "Proof", by keeping the link but writting only `Proof`. Defaults to `text proof={\string\mbox{\string\hyperref[thm:prAtEnd\pratendcountercurrent]{\proofname}}}`
+- `stared` (or `no number`): when you use the stared version of a theorem you don't have any number, so autoref fails to write a nice link to the theorem. This option changes the text of "Proof", by keeping the link but writting only `Proof`. Equivalent to `text proof={\string\mbox{\string\hyperref[thm:prAtEnd\pratendcountercurrent]{\proofname}}}`
+- `see full proof`: useful when you want to write in the main text only a sketch of proof, this alias writes a link `See full proof on page X`. Equivalent to `text link={See \hyperref[proof:prAtEnd\pratendcountercurrent]{full proof} on page~\pageref{proof:prAtEnd\pratendcountercurrent}}`
 - `defaults`: default style that is loaded before anything else that configure by default a link to the proof, put the proof in appendix, use the category `defaultcategory`. It is an alias of `end, link to proof, no restate, category=defaultcategory, text link={See \hyperref[proof:prAtEnd\pratendcountercurrent]{proof} on page~\pageref{proof:prAtEnd\pratendcountercurrent}}, text proof={Proof of \string\autoref{thm:prAtEnd\pratendcountercurrent}}, restate command=pratenddummymacro`.
 - `custom defaults`: style that is empty (contains only the option you sent to the package) that is overwritten and loaded right after `defaults`. Useful if you want to overwrite the default.
 
 
 ## Contributions ##
 
-Feel free to contribute and send pull requests at  https://github.com/leo-colisson/proof-at-the-end !
+Feel free to contribute, report bugs, and send pull requests on the github repository  [https://github.com/leo-colisson/proof-at-the-end](https://github.com/leo-colisson/proof-at-the-end) !
 
+NB: the documentation is generated from the Markdown file `README.md` thanks to pandoc. These commands may help you:
+```bash
+%% Compile the demo
+make demo
+%% Clean the project
+make clean
+%% Generate the documentation
+make doc
+%% Generate a package for CTAN
+make package
+```

@@ -12,20 +12,17 @@ clean:
 doc:
 	rm -rf buildpratend/doc/
 	mkdir -p buildpratend/doc/
-	cp README.md buildpratend/doc/
-# Move the titles to the good level
-	sed -i 's/^# .*//' buildpratend/doc/README.md
-	sed -i 's/^## /# /' buildpratend/doc/README.md
-	pandoc buildpratend/doc/README.md author.yaml --number-sections -f markdown --toc -t latex -s -o buildpratend/doc/proof-at-the-end-doc.tex
+	pandoc README.md author.yaml --lua-filter=promote-headers.lua --number-sections -f markdown --toc -t latex -s -o buildpratend/doc/proof-at-the-end-doc.tex
 	cd buildpratend/doc/ && pdflatex proof-at-the-end-doc.tex && pdflatex proof-at-the-end-doc.tex && cp proof-at-the-end-doc.pdf ../proof-at-the-end.pdf
 	@echo "Documentation built in buildpratend/proof-at-the-end.pdf"
 
 # Generates the doc in buildpratend/proof-at-the-end-doc.pdf
-package: doc
+package: doc demo
 	rm -rf buildpratend/proof-at-the-end/
 	mkdir -p buildpratend/proof-at-the-end/
 	cp buildpratend/proof-at-the-end.pdf buildpratend/proof-at-the-end/
 	cd buildpratend/proof-at-the-end/ && makedtx -dir $(SRC_DIR) -src "proof-at-the-end\.sty=>proof-at-the-end.sty" -doc ../doc/proof-at-the-end-doc.tex proof-at-the-end
+	cp demo.pdf buildpratend/proot-at-the-end/
 	cd buildpratend/ && tar -zcvf proof-at-the-end.tar.gz proof-at-the-end/
 	@echo "Package built in buildpratend/proof-at-the-end.tar.gz"
 

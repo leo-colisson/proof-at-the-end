@@ -1,0 +1,11 @@
+auto/**
+buildpratend/**
+*.aux
+*.log
+*.out
+*.synctex.gz
+*.pdf
+pratenddefaultcategory.tex
+pratendgreattheorem.tex
+debug.tex
+

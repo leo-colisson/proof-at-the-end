@@ -28,10 +28,26 @@
 \newtheorem*{lemma*}{Lemma}
 \providecommand*\lemmaautorefname{Lemma}
 
+%% If you want you can define shortcuts:
+\usepackage{xparse}
+\NewDocumentEnvironment{mygreatthm}{O{}+b}{%
+  \begin{theoremEnd}[category=greattheorem]{thm}[#1]%
+    #2%
+  \end{theoremEnd}%
+}
+% Usage:
+% \begin{mynormalthm}[The title]{The theorem}\end{mynormalthm}
+
+% And to define new shortcuts:
+\NewDocumentEnvironment{mynormalthm}{O{}+b}{%
+  \begin{theoremEnd}[normal]{thm}[#1]%
+    #2%
+  \end{theoremEnd}%
+}
 
 \begin{document}
 
-\section{First section}
+\section{Demo of proof-at-the-end}
 
 % And use \theoremProofEnd[<package options>]{theorem environment name}[Title]{Theorem}{Optional proof}
 \begin{theoremEnd}{thm}[Yes I can have a title]
@@ -45,7 +61,8 @@
 And I can refer to my theorems using classic labels, like in \autoref{thm:ilikelabels}.
 
 \begin{theoremEnd}[category=greattheorem, end]{thm}[Different categories]
-  You can also create several categories, and put the proofs in different sections.  
+  You can also create several categories, and put the proofs in different sections.
+  \[2\Delta = \Delta + \Delta\]
 \end{theoremEnd}
 \begin{proofEnd}
   See, I am in another section! And I refer to \autoref{thm:ilikelabels} even in the proof.
@@ -132,8 +149,24 @@ Or keep the link, but remove the reference (practical for stared versions):
   Si c'est pas beau ;)
 \end{proofEnd}
 
+And of course it is easy to define custom shortcuts, using in prelude:
+\begin{verbatim}
+\NewDocumentEnvironment{frenchthm}{O{}+b}{%
+  \begin{theoremEnd}[french]{thm}[#1]%
+    #2%
+  \end{theoremEnd}%
+}
+\end{verbatim}
+
+\begin{mynormalthm}[My own environment]
+  You can then create your own environment from other styles using
+\end{mynormalthm}
+\begin{proofEnd}
+  That's quicker :D
+\end{proofEnd}
+
 \begin{theoremEnd}[]{thm}[Yes I can have no proof]
-  Proof is useless. You can do do it.  
+  Proof is useless. You can do do it.
 \end{theoremEnd}
 
 \begin{theoremEnd}[restate command=mymanualrestate]{thm}[Manual restate]
@@ -141,6 +174,16 @@ Or keep the link, but remove the reference (practical for stared versions):
 \end{theoremEnd}
 \begin{proofEnd}
   Use restate command for that! (see \autoref{sec:manualrestate} for an example)
+\end{proofEnd}
+
+\begin{theoremEnd}[see full proof]{thm}
+  I can also write a sketch of proof, and put the full proof in appendix.
+\end{theoremEnd}
+\begin{proof}
+  Hint: look at the alias options.
+\end{proof}
+\begin{proofEnd}
+  You just use ``see full proof'' as an option
 \end{proofEnd}
 
 \section{Section with restate before theorem}\label{sec:restatebefore}
@@ -164,7 +207,7 @@ Or keep the link, but remove the reference (practical for stared versions):
   laterrestatable
 \end{theoremEnd}
 \begin{proofEnd}
-  To state a theorem before the initial definition, use theoremProofEndRestateBefore where you first want to state the theorem, with a unique name in the second mandatory argument, and when you want to insert the theorem for the second time, use the usual theoremProofEnd command with the same unique name as before in place of the theorem definition.  
+  To state a theorem before the initial definition, use theoremEndRestateBefore environment where you first want to state the theorem, with a unique name in the second mandatory argument, and when you want to insert the theorem for the second time, use the usual theoremProofEnd command with the same unique name as before in place of the theorem definition and the ``restated before'' option.  
 \end{proofEnd}
 
 \section{Section with standard proofs}
