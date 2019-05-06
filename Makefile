@@ -21,8 +21,8 @@ package: doc demo
 	rm -rf buildpratend/proof-at-the-end/
 	mkdir -p buildpratend/proof-at-the-end/
 	cp buildpratend/proof-at-the-end.pdf buildpratend/proof-at-the-end/
-	cd buildpratend/proof-at-the-end/ && makedtx -dir $(SRC_DIR) -src "proof-at-the-end\.sty=>proof-at-the-end.sty" -doc ../doc/proof-at-the-end-doc.tex proof-at-the-end
-	cp demo.pdf buildpratend/proot-at-the-end/
+	cd buildpratend/proof-at-the-end/ && makedtx -author "Léo Colisson" -dir $(SRC_DIR) -src "proof-at-the-end\.sty=>proof-at-the-end.sty" -doc ../doc/proof-at-the-end-doc.tex proof-at-the-end
+	cp demo.pdf buildpratend/proof-at-the-end/proof-at-the-end-demo.pdf
 	cd buildpratend/ && tar -zcvf proof-at-the-end.tar.gz proof-at-the-end/
 	@echo "Package built in buildpratend/proof-at-the-end.tar.gz"
 
