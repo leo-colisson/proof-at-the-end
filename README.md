@@ -32,6 +32,7 @@ Then, load it in your project:
 
 Then, you can configure your theorem/lemma environments as usual, by using any counter you like...:
 
+    \usepackage{amssymb, amsthm, amsmath}
     % Theorems
     \newtheorem{thm}{Theorem}[section]
     \newtheorem*{thm*}{Theorem}
