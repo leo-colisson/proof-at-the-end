@@ -1,8 +1,7 @@
----
-title: Proof-at-the-end, or how to move proofs in appendix in LaTeX
-numbersections: true
----
- 
+# Proof-at-the-end, or how to move proofs in appendix in LaTeX
+
+## Introduction
+
 This small package aims to provide a way to easily move proofs in the appendix. You can:
 
 - Move proofs in different places/sections by giving different "categories" to the theorems
@@ -16,25 +15,18 @@ This small package aims to provide a way to easily move proofs in the appendix. 
 - Change the text of the link, for example to use another language
 - Have a nice environment-based commands in order to mimic the usual theorem/proof structure.
 
-NB: if you want to make sure all the references are binded correctly, make sure to compile twice the document!
 
-## Demo
+NB: This project is hosted on github at https://github.com/leo-colisson/proof-at-the-end . Feel free to contribute, or read/copy-paste the documentation/examples from there.
 
-If you just want to see an example of what you can do, you can directly open the file `demo.pdf` to see what is possible, or generate it with
+## Quickstart ##
 
-```bash
-git clone https://github.com/tobiasBora/proof-at-the-end.git
-pdflatex demo.tex && pdflatex demo.tex
-```
-
-## Quickstart
-
-To use this package, if it's not yet in your CTAN distribution, first download the `proof-at-the-end.sty` file and insert it in the root of your project with (you can also clone this repository if you prefer). It also requires a recent version of xparse, so for simplicity we included the sty file of xparse in this repository as well:
+To use this package, if it's not yet in your CTAN distribution, first download the `proof-at-the-end.sty` file and insert it in the root of your project with the following commands (you can also clone this repository if you prefer). It also requires a recent version of xparse, so for simplicity we included the sty file of xparse in this repository as well:
 
 ```bash
 cd <your project>
-wget https://raw.githubusercontent.com/tobiasBora/proof-at-the-end/master/proof-at-the-end.sty
-wget https://raw.githubusercontent.com/tobiasBora/proof-at-the-end/master/xparse.sty
+repopratend="https://raw.githubusercontent.com/leo-colisson/proof-at-the-end"
+wget ${repopratend}/master/proof-at-the-end.sty
+wget ${repopratend}/master/xparse.sty
 ```
 
 Then, load it in your project:
@@ -86,11 +78,23 @@ And put in the place where you would like to display the theorem the following c
 \printProofs
 ```
 
-If you would like to display a lemma instead, just change `{thm}` into `{lemma}`, or into any other theorem environment you defined! 
+If you would like to display a lemma instead, just change `{thm}` into `{lemma}`, or into any other theorem environment you defined! You can now compile safely your document ;)
+
+NB: if you want to make sure all the references are linked correctly, make sure to compile twice the document!
+
 
 Isn't it simple ?
 
-## Configuration
+## Demo ##
+
+If you just want to see an example of what you can do, you can directly open the file `demo.pdf` to see what is possible, or generate it with
+
+```bash
+git clone https://github.com/leo-colisson/proof-at-the-end.git
+pdflatex demo.tex && pdflatex demo.tex
+```
+
+## Configuration ##
 
 You can very easily configure this package, and how the theorems/proofs are displayed by providing a value in `OPTIONS`. For example, if you would like to keep the proof of a theorem in the main text, use the `normal` option:
 
@@ -136,7 +140,7 @@ You can also change the default configuration when you load the package by nesti
 
 Note also that it is also possible to give options to the `proofEnd` environment, but it is usually useless, as it will automatically pick the parameters from the last `theoremEnd` environment. However, if for some reasons you want to change the options of the proof only, you can do it (may be practical to write shortcuts), but do it as your own risks ;)
 
-## Categories, or how to move proofs in different sections
+## Categories, or how to move proofs in different sections ##
 
 Let's imagine that you have some proofs that are easy to do, and some proofs that are long but interesting. You may want to put the easy proofs in a different place that the long proofs. It is super easy to do, you just need to give a category name to the option `category` like here:
 
@@ -155,7 +159,7 @@ and give in the section where you would like to display the proofs the code this
 \printProofs[mylongproofs]
 ```
 
-## Comments
+## Comments ##
 
 You can also move some text in the appendix by using:
 
@@ -178,7 +182,7 @@ You can also use the environment notation like that:
 \end{textAtEnd}
 ```
 
-## Restate a theorem
+## Restate a theorem ##
 
 It is easy to restate a theorem in the appendix, to have both the theorem in the main text and in the appendix: just use the option `restate`:
 
@@ -211,7 +215,7 @@ If you want to (re)state a theorem *before* its definition (say in the introduct
 \end{proofEnd}
 ```
 
-## List of options:
+## List of options: ##
 
 Here is the list of fundamental options supported. Most options have a `no` version, with `no ` written before. Note that you may prefer to use directly the alias/styles (see next paragraph).
 
@@ -240,7 +244,7 @@ Here are all the alias/styles (you can create you own as well), they are practic
 - `custom defaults`: style that is empty (contains only the option you sent to the package) that is overwritten and loaded right after `defaults`. Useful if you want to overwrite the default.
 
 
-## Contributions
+## Contributions ##
 
 Feel free to contribute and send pull requests!
 

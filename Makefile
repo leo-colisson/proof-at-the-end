@@ -12,9 +12,12 @@ clean:
 doc:
 	rm -rf buildpratend/doc/
 	mkdir -p buildpratend/doc/
-	pandoc README.md -f markdown -t latex -s -o buildpratend/doc/proof-at-the-end-doc.tex
-#	pandoc README.md --listings -H listings-setup.tex -f markdown -t latex -s -o buildpratend/doc/proof-at-the-end-doc.tex
-	cd buildpratend/doc/ && pdflatex proof-at-the-end-doc.tex && cp proof-at-the-end-doc.pdf ../proof-at-the-end.pdf
+	cp README.md buildpratend/doc/
+# Move the titles to the good level
+	sed -i 's/^# .*//' buildpratend/doc/README.md
+	sed -i 's/^## /# /' buildpratend/doc/README.md
+	pandoc buildpratend/doc/README.md author.yaml --number-sections -f markdown --toc -t latex -s -o buildpratend/doc/proof-at-the-end-doc.tex
+	cd buildpratend/doc/ && pdflatex proof-at-the-end-doc.tex && pdflatex proof-at-the-end-doc.tex && cp proof-at-the-end-doc.pdf ../proof-at-the-end.pdf
 	@echo "Documentation built in buildpratend/proof-at-the-end.pdf"
 
 # Generates the doc in buildpratend/proof-at-the-end-doc.pdf
