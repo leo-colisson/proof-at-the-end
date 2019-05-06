@@ -86,7 +86,10 @@ You can very easily configure this package, and how the theorems/proofs are disp
 
 The options are in fact a set of keys/values, thanks to `pgfkeys`. So you can combine them with comma separated list like that (order matters, as the right-most values may overwrite configuration set by left-most values):
 
-    \begin{theoremEnd}[proof at the end, no link to proof, text proof={Difficult proof}]{thm}[A title]
+    \begin{theoremEnd}[proof at the end,
+                       no link to proof,
+                       text proof={Difficult proof}
+                      ]{thm}[A title]
       Each theorem can have a custom configuration!
     \end{theoremEnd}
     \begin{proofEnd}
@@ -154,18 +157,21 @@ You can also use the option `restate command=yourcustomcommand` in order to crea
 
 If you want to (re)state a theorem *before* its definition (say in the introduction), there is also a custom environment `theoremEndRestateBefore` that requires a (unique) custom name that you need to provide also later on in place of the real theorem with the option `restated before`:
 
-    \section{Introduction}
-    \begin{theoremEndRestateBefore}{thm}[Title]{anamethatisusedlaterontorestate}
-      It is possible to state the theorem before in the introduction, and restate it later
-    \end{theoremEndRestateBefore}
-    
-    \section{Real definition}
-    \begin{theoremEnd}[restated before]{thm}
-      anamethatisusedlaterontorestate
-    \end{theoremEnd}
-    \begin{proofEnd}
-      Proof of the theorem, put in place of the theorem the unique name
-    \end{proofEnd}
+~~~~~~~~~~~~ {.latex}
+\section{Introduction}
+\begin{theoremEndRestateBefore}{thm}[Title]{anamethatisusedtorestate}
+  It is possible to state the theorem before
+  in the introduction, and restate it later
+\end{theoremEndRestateBefore}
+
+\section{Real definition}
+\begin{theoremEnd}[restated before]{thm}
+  anamethatisusedtorestate
+\end{theoremEnd}
+\begin{proofEnd}
+  Proof of the theorem, put in place of the theorem the unique name
+\end{proofEnd}
+~~~~~~~~~~~~~~~~~~~~~~
 
 ## List of options:
 

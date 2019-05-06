@@ -1,5 +1,8 @@
 SRC_DIR:=$(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
+demo:
+	pdflatex demo.tex && pdflatex demo.tex
+
 clean:
 	rm -rf buildpratend/
 	latexmk -C
@@ -9,7 +12,8 @@ clean:
 doc:
 	rm -rf buildpratend/doc/
 	mkdir -p buildpratend/doc/
-	cp proof-at-the-end-doc.tex buildpratend/doc/
+	pandoc README.md -f markdown -t latex -s -o buildpratend/doc/proof-at-the-end-doc.tex
+#	pandoc README.md --listings -H listings-setup.tex -f markdown -t latex -s -o buildpratend/doc/proof-at-the-end-doc.tex
 	cd buildpratend/doc/ && pdflatex proof-at-the-end-doc.tex && cp proof-at-the-end-doc.pdf ../proof-at-the-end.pdf
 	@echo "Documentation built in buildpratend/proof-at-the-end.pdf"
 
@@ -22,4 +26,4 @@ package: doc
 	cd buildpratend/ && tar -zcvf proof-at-the-end.tar.gz proof-at-the-end/
 	@echo "Package built in buildpratend/proof-at-the-end.tar.gz"
 
-.PHONY: clean doc package
+.PHONY: demo clean doc package
