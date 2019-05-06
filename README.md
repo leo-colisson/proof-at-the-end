@@ -11,26 +11,30 @@ This small package aims to provide a way to easily move proofs in the appendix. 
 - Move both the theorem and the proof completely in appendix
 - Easily change the defaults, and create your own styles
 - Change the text of the link, for example to use another language
+- Have a nice environment-based commands in order to mimic the usual theorem/proof structure.
+
+NB: if you want to make sure all the references are binded correctly, make sure to compile twice the document!
 
 ## Demo
 
 If you just want to see an example of what you can do, you can directly open the file `demo.pdf` to see what is possible, or generate it with
 
     git clone https://github.com/tobiasBora/proof-at-the-end.git
-    pdflatex demo.tex
+    pdflatex demo.tex && pdflatex demo.tex
 
 ## Quickstart
 
-To use this package, if it's not yet in your CTAN distribution, first download the `proof-at-the-end.sty` file and insert it in the root of your project with (you can also clone this repository if you prefer):
+To use this package, if it's not yet in your CTAN distribution, first download the `proof-at-the-end.sty` file and insert it in the root of your project with (you can also clone this repository if you prefer). It also requires a recent version of xparse, so for simplicity we included the sty file of xparse in this repository as well:
 
     cd <your project>
     wget https://raw.githubusercontent.com/tobiasBora/proof-at-the-end/master/proof-at-the-end.sty
+    wget https://raw.githubusercontent.com/tobiasBora/proof-at-the-end/master/xparse.sty
 
 Then, load it in your project:
 
     \usepackage{proof-at-the-end}
 
-Then, you can configure your theorem/lemma environments as usual, by using any counter you like...:
+Then, you can configure your theorem/lemma/... environments as usual, by using any counter you like...:
 
     \usepackage{amssymb, amsthm, amsmath}
     % Theorems
@@ -44,19 +48,22 @@ Then, you can configure your theorem/lemma environments as usual, by using any c
     
 And inside your document, you can use the following syntax to create a new theorem:
 
-    \theoremProofEnd[OPTIONS]{THEOREM ENVIRONMENT}[OPTIONAL TITLE]{\label{thm:OPTIONAL LABEL}
-        YOUR THEOREM
-    }{
+    \begin{theoremEnd}[OPTIONS]{THEOREM ENVIRONMENT}[OPTIONAL TITLE]
+        YOUR THEOREM, with eventually labels like \label{thm:OPTIONAL LABEL}
+    \end{theoremEnd}
+    \begin{proofEnd}
         YOUR (OPTIONAL) PROOF
-    }
+    \end{proofEnd}
 
 For example:
 
-    \theoremProofEnd{thm}[Yes I can have a title]{\label{thm:ilikelabels}
+    \begin{theoremEnd}{thm}[Yes I can have a title]
+      \label{thm:ilikelabels}
       Creating a new theorem is easy
-    }{
+    \end{theoremEnd}
+    \begin{proofEnd}
       You want a proof? Here is it!
-    }
+    \end{proofEnd}
 
 And put in the place where you would like to display the theorem the following code:
 
@@ -70,19 +77,21 @@ Isn't it simple ?
 
 You can very easily configure this package, and how the theorems/proofs are displayed by providing a value in `OPTIONS`. For example, if you would like to keep the proof of a theorem in the main text, use the `normal` option:
 
-    \theoremProofEnd[normal]{thm}[A title]{
+    \begin{theoremEnd}[normal]{thm}[A title]
       You can easily turn a theorem back into a normal theorem!
-    }{ %% Proof
+    \end{theoremEnd}
+    \begin{proofEnd}
       And keep the proof with you!
-    }
+    \end{proofEnd}
 
-The options are in fact a set of keys/values, thanks to `pgfkeys`. So you can combine them with comma separated list like that (order matters, as the right-most values may change configuration set by left-most values):
+The options are in fact a set of keys/values, thanks to `pgfkeys`. So you can combine them with comma separated list like that (order matters, as the right-most values may overwrite configuration set by left-most values):
 
-    \theoremProofEnd[proof at the end, no link to proof, text proof={Difficult proof}]{thm}[A title]{
+    \begin{theoremEnd}[proof at the end, no link to proof, text proof={Difficult proof}]{thm}[A title]
       Each theorem can have a custom configuration!
-    }{ %% Proof
+    \end{theoremEnd}
+    \begin{proofEnd}
       Quite practical, isn't it?
-    }
+    \end{proofEnd}
 
 You can easily create your own styles like that:
 
@@ -97,15 +106,18 @@ You can also change the default configuration when you load the package by nesti
 
     \usepackage[conf={normal}]{proof-at-the-end}
 
+Note also that it is also possible to give options to the `proofEnd` environment, but it is usually useless, as it will automatically pick the parameters from the last `theoremEnd` environment. However, if for some reasons you want to change the options of the proof only, you can do it (may be practical to write shortcuts), but do it as your own risks ;)
+
 ## Categories, or how to move proofs in different sections
 
 Let's imagine that you have some proofs that are easy to do, and some proofs that are long but interesting. You may want to put the easy proofs in a different place that the long proofs. It is super easy to do, you just need to give a category name to the option `category` like here:
 
-    \theoremProofEnd[category=mylongproofs]{thm}[A title]{
+    \begin{theoremEnd}[category=mylongproofs]{thm}[A title]
       You can easily change the place of the proofs
-    }{ %% Proof
+    \end{theoremEnd}
+    \begin{proofEnd}
       Just use a different category name!
-    }
+    \end{proofEnd}
 
 and give in the section where you would like to display the proofs the code this category name to `\printProofs`:
 
@@ -115,39 +127,49 @@ and give in the section where you would like to display the proofs the code this
 
 You can also move some text in the appendix by using:
 
-    \textInAppendix{You text that should go in appendix}
+    \textEnd{You text that should go in appendix}
     
-You can also give it a category as explained above, and configure it to be displayed in both the main text and at the end of the file with:
+You can also give it a category as explained above, or configure it to be displayed in both the main text and at the end of the file with:
 
-    \textInAppendix[both]{I am a comment that is written in both the main text and the appendix}
+    \textEnd[both]{I am a comment that is written in both the main text and the appendix}
+
+You can also use the environment notation like that:
+
+    \begin{textAtEnd}[options]
+      You can also use the environment syntax.
+    \end{textAtEnd}
     
 ## Restate a theorem
 
 It is easy to restate a theorem in the appendix, to have both the theorem in the main text and in the appendix: just use the option `restate`:
 
-    \theoremProofEnd[end, restate]{thm}[A title]{
+    \begin{theoremEnd}[end, restate]{thm}[A title]
       This theorem will be displayed both in main text and appendix.
-    }{
+    \end{theoremEnd}
+    \begin{proofEnd}
       Just use restate option.
-    }
+    \end{proofEnd}
 
 You can also use the option `restate command=yourcustomcommand` in order to create a macro `\yourcustomcommand` that will restate the theorem wherever you want (but after the definition).
 
-If you want to (re)state a theorem *before* its definition (say in the introduction), there is also a custom command `\theoremProofEndRestateBefore` that requires a (unique) custom name that you need to provide also later on in place of the real theorem with the option `restated before`:
+If you want to (re)state a theorem *before* its definition (say in the introduction), there is also a custom environment `theoremEndRestateBefore` that requires a (unique) custom name that you need to provide also later on in place of the real theorem with the option `restated before`:
 
     \section{Introduction}
-    \theoremProofEndRestateBefore{thm}[Title]{anamethatisusedlaterontorestate}{
+    \begin{theoremEndRestateBefore}{thm}[Title]{anamethatisusedlaterontorestate}
       It is possible to state the theorem before in the introduction, and restate it later
-    }
+    \end{theoremEndRestateBefore}
     
     \section{Real definition}
-    \theoremProofEnd[restated before]{thm}{anamethatisusedlaterontorestate}{
+    \begin{theoremEnd}[restated before]{thm}
+      anamethatisusedlaterontorestate
+    \end{theoremEnd}
+    \begin{proofEnd}
       Proof of the theorem, put in place of the theorem the unique name
-    }
+    \end{proofEnd}
 
 ## List of options:
 
-Here is the list of options supported. Most options have a `no` version, with `no ` written before. Note that you may prefer to use directly the alias/styles (see next paragraph).
+Here is the list of fundamental options supported. Most options have a `no` version, with `no ` written before. Note that you may prefer to use directly the alias/styles (see next paragraph).
 
 - `category`: category of the proof (if you want to put proofs at several places), can be anything
 - `proof here`/`no proof here`: put (or not) the proof in the main text
@@ -172,4 +194,7 @@ Here are all the alias/styles (you can create you own as well), they are practic
 - `custom defaults`: style that is empty (contains only the option you sent to the package) that is overwritten and loaded right after `defaults`. Useful if you want to overwrite the default.
 
 
+## Contributions
+
+Feel free to contribute and send pull requests!
 
