@@ -246,5 +246,5 @@ Here are all the alias/styles (you can create you own as well), they are practic
 
 ## Contributions ##
 
-Feel free to contribute and send pull requests!
+Feel free to contribute and send pull requests at  https://github.com/leo-colisson/proof-at-the-end !
 
