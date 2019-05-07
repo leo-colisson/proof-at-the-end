@@ -13,11 +13,11 @@ This small package aims to provide a way to easily move proofs in the appendix. 
 - Move both the theorem and the proof completely in appendix
 - Easily change the defaults, and create your own styles/environments
 - Include sketch of proof in the main text, and full proof in appendix
-- Change the text of the link, for example to use another language
+- Change the text of the link, for example to translate into another language
 - Have a nice environment-based commands in order to mimic the usual theorem/proof structure.
 
 
-NB: This project is hosted on github at [https://github.com/leo-colisson/proofAtTheEnd](https://github.com/leo-colisson/proofAtTheEnd) . Feel free to contribute, report bugs, or read/copy-paste the documentation/examples from there.
+NB: This project is hosted on github at [https://github.com/leo-colisson/proof-at-the-end](https://github.com/leo-colisson/proof-at-the-end) . Feel free to contribute, report bugs, or read/copy-paste the documentation/examples from there.
 
 Disclaimer: This package is still in beta and not considered as stable.
 
@@ -26,25 +26,25 @@ Disclaimer: This package is still in beta and not considered as stable.
 If you just want to see an example of what you can do, you can directly open the file `demo.pdf` to see what is possible, or generate it with
 
 ```bash
-git clone https://github.com/leo-colisson/proofAtTheEnd.git
+git clone https://github.com/leo-colisson/proof-at-the-end.git
 pdflatex demo.tex && pdflatex demo.tex
 ```
 
 ## Quickstart ##
 
-To use this package, if it's not yet in your CTAN distribution, first download the `proofAtTheEnd.sty` file and insert it in the root of your project with the following commands (you can also clone this repository if you prefer). It also requires a recent version of xparse, so for simplicity we included the sty file of xparse in this repository as well:
+To use this package, if it's not yet in your CTAN distribution, first download the `proof-at-the-end.sty` file and insert it in the root of your project with the following commands (you can also clone this repository if you prefer). It also requires a recent version of xparse, so for simplicity we included the sty file of xparse in this repository as well:
 
 ```bash
 cd <your project>
-repopratend="https://raw.githubusercontent.com/leo-colisson/proofAtTheEnd"
-wget ${repopratend}/master/proofAtTheEnd.sty
+repopratend="https://raw.githubusercontent.com/leo-colisson/proof-at-the-end"
+wget ${repopratend}/master/proof-at-the-end.sty
 wget ${repopratend}/master/xparse.sty
 ```
 
 Then, load it in your project:
 
 ```latex
-\usepackage{proofAtTheEnd}
+\usepackage{proof-at-the-end}
 ```
 
 Then, you can configure your theorem/lemma/... environments as usual, by using any counter you like...:
@@ -140,7 +140,7 @@ You can easily create your own styles like that:
 You can also change the default configuration when you load the package by nesting the configuration into a `conf` key:
 
 ```latex
-\usepackage[conf={normal, one big link}]{proofAtTheEnd}
+\usepackage[conf={normal, one big link}]{proof-at-the-end}
 ```
 
 Note however that for now it is *not* possible to use macros directly inside the options when you load the package, so if you need to use more complicated configuration, you can overwrite the `global custom defaults` style for global configuration, and the `local custom defaults` style for local configuration (useful for example if you want to define a category for a single section):
@@ -346,7 +346,7 @@ Here are all the alias/styles (you can create you own as well), they are practic
 
 ## Contributions ##
 
-Feel free to contribute, report bugs, and send pull requests on the github repository  [https://github.com/leo-colisson/proofAtTheEnd](https://github.com/leo-colisson/proofAtTheEnd) !
+Feel free to contribute, report bugs, and send pull requests on the github repository  [https://github.com/leo-colisson/proof-at-the-end](https://github.com/leo-colisson/proof-at-the-end) !
 
 NB: the documentation is generated from the Markdown file `README.md` thanks to pandoc. These commands may help you:
 ```bash

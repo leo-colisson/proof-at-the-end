@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{proofAtTheEnd}[2019/05/06 A package to move proofs in appendix]
+\ProvidesPackage{proof-at-the-end}[2019/05/06 A package to move proofs in appendix]
  
 \RequirePackage{etoolbox}
 \RequirePackage{hyperref}
@@ -14,7 +14,7 @@
 %% https://tex.stackexchange.com/questions/109747/put-all-package-options-into-one-command
 %% Forward the options list to the command \pratendOptdefconf
 %% in order to use:
-%% \usepackage[conf={normal}]{proofAtTheEnd}
+%% \usepackage[conf={normal}]{proof-at-the-end}
 \SetupKeyvalOptions{
   family=pratendOpt,
   prefix=pratendOpt,
@@ -23,7 +23,7 @@
 \DeclareLocalOptions{conf}% \pratendOptdefconf contains the proof
 \ProcessKeyvalOptions*
 
-% \DeclareOption*{\PackageWarning{proofAtTheEnd}{Unknown}}
+% \DeclareOption*{\PackageWarning{proof-at-the-end}{Unknown}}
 % \ProcessOptions\relax
 
 \newwrite\appendwrite
@@ -170,7 +170,7 @@
   configuration options/.style/.expand once={
     % This styles will contain the configuration
     % given as options of the package like:
-    % \usepackage[conf={normal, no link to proof}]{proofAtTheEnd}
+    % \usepackage[conf={normal, no link to proof}]{proof-at-the-end}
     % The package options does not accept macros and valued keys
     % due to some fundamental issues:
     % https://tex.stackexchange.com/questions/489564/use-unexpanded-macro-in-package-options/489570#489570

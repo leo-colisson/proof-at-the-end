@@ -12,22 +12,22 @@ clean:
 	rm -f pratend*
 	rm -rf *.log
 
-# Generates the doc in buildpratend/proofAtTheEnd_doc.pdf
+# Generates the doc in buildpratend/proof-at-the-end_doc.pdf
 doc:
 	rm -rf buildpratend/doc/
 	mkdir -p buildpratend/doc/
-	pandoc README.md author.yaml --lua-filter=promote-headers.lua --number-sections -f markdown --toc -t latex -s -o buildpratend/doc/proofAtTheEnd_doc.tex
-	cd buildpratend/doc/ && pdflatex proofAtTheEnd_doc.tex && pdflatex proofAtTheEnd_doc.tex && cp proofAtTheEnd_doc.pdf ../proofAtTheEnd.pdf
-	@echo "Documentation built in buildpratend/proofAtTheEnd.pdf"
+	pandoc README.md author.yaml --lua-filter=promote-headers.lua --number-sections -f markdown --toc -t latex -s -o buildpratend/doc/proof-at-the-end_doc.tex
+	cd buildpratend/doc/ && pdflatex proof-at-the-end_doc.tex && pdflatex proof-at-the-end_doc.tex && cp proof-at-the-end_doc.pdf ../proof-at-the-end.pdf
+	@echo "Documentation built in buildpratend/proof-at-the-end.pdf"
 
-# Generates the package in buildpratend/proofAtTheEnd.tar.gz
+# Generates the package in buildpratend/proof-at-the-end.tar.gz
 package: doc demo
-	rm -rf buildpratend/proofAtTheEnd/
-	mkdir -p buildpratend/proofAtTheEnd/
-	cp buildpratend/proofAtTheEnd.pdf buildpratend/proofAtTheEnd/
-	cd buildpratend/proofAtTheEnd/ && makedtx -author "Léo Colisson" -dir $(SRC_DIR) -src "proofAtTheEnd\.sty=>proofAtTheEnd.sty" -doc ../doc/proofAtTheEnd_doc.tex proofAtTheEnd
-	cp demo.pdf buildpratend/proofAtTheEnd/proofAtTheEnd_demo.pdf
-	cd buildpratend/ && tar -zcvf proofAtTheEnd.tar.gz proofAtTheEnd/
-	@echo "Package built in buildpratend/proofAtTheEnd.tar.gz"
+	rm -rf buildpratend/proof-at-the-end/
+	mkdir -p buildpratend/proof-at-the-end/
+	cp buildpratend/proof-at-the-end.pdf buildpratend/proof-at-the-end/
+	cd buildpratend/proof-at-the-end/ && makedtx -author "Léo Colisson" -dir $(SRC_DIR) -src "proof-at-the-end\.sty=>proof-at-the-end.sty" -doc ../doc/proof-at-the-end_doc.tex proof-at-the-end
+	cp demo.pdf buildpratend/proof-at-the-end/proof-at-the-end_demo.pdf
+	cd buildpratend/ && tar -zcvf proof-at-the-end.tar.gz proof-at-the-end/
+	@echo "Package built in buildpratend/proof-at-the-end.tar.gz"
 
 .PHONY: demo clean doc package
