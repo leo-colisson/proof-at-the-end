@@ -158,14 +158,17 @@
     default text proof,
     restate command=pratenddummymacro,
   },
-  configuration options/.style={
+  configuration options/.style/.expand once={
     % This styles will contain the configuration
     % given as options of the package like:
     % \usepackage[conf={normal, no link to proof}]{proofAtTheEnd}
-    % See below how it's defined. The options does not accept
-    % macros, so if you need to write macro edit instead the
-    % style "global custom defaults" or
-    % "local custom defaults" for local changes instead.
+    % The package options does not accept macros and valued keys
+    % due to some fundamental issues:
+    % https://tex.stackexchange.com/questions/489564/use-unexpanded-macro-in-package-options/489570#489570
+    % so if you need to write macro/valued key, edit instead the
+    % style "/prAtEnd/global custom defaults" or
+    % "local /prAtEnd/custom defaults" for local changes instead.
+    \pratendOptconf%
   },
   global custom defaults/.style={
     %% you can put in this style any global defaults
@@ -184,22 +187,6 @@
     local custom defaults,
   },
 }
-
-\edef\mydefinepgfkeys{\noexpand\pgfkeys{%
-  /prAtEnd/.cd,%
-  configuration options/.style={
-    % This styles will contain the configuration
-    % given as options of the package like:
-    % \usepackage[conf={normal, no link to proof}]{proofAtTheEnd}
-    % See below how it's defined. The options does not accept
-    % macros, so if you need to write macro edit instead the
-    % style "global custom defaults" or
-    % "local custom defaults" for local changes instead.
-    \unexpanded\expandafter{\pratendOptconf}
-  },
-}}
-\show\mydefinepgfkeys%
-\mydefinepgfkeys
 
 \newcounter{counterAllProofEnd}
 \stepcounter{counterAllProofEnd}
@@ -268,13 +255,13 @@
 }
 
 \NewDocumentEnvironment{proofEnd}{O{}+b}{
-  \edef\pgfkeysexpanded{\noexpand\pgfkeys{%
+  \pgfkeys{%
     /prAtEnd/.cd,
     all defaults,
-    \unexpanded\expandafter{\pratendlastoptions},
+    prAtEndTmpStyle/.style/.expand once={\pratendlastoptions},
+    prAtEndTmpStyle,
     #1
-  }}%
-  \pgfkeysexpanded%
+  }%
   \unless\ifallattheend
     %% Write eventually a link to the proof
     \iflinktoproof%

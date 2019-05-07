@@ -99,7 +99,7 @@ Isn't it simple ?
 
 ## Use cases
 
-### Configuration, or how to use and create styles ###
+### Configuration and how to use and create styles ###
 
 You can very easily configure this package, and choose how each theorem/proof must be displayed by providing a value in `OPTIONS`. For example, if you would like to keep the proof of a theorem in the main text like any normal theorem, use the `normal` option:
 
@@ -197,12 +197,6 @@ That you could use like that:
 \begin{proofE}
   The proof
 \end{proofE}
-```
-
-Finally, note that you can redefine the style `custom defaults` (empty by default) in order to change the default style in some specific parts of the file. It can be pretty practical for example to define a category for a specific section:
-
-```latex
-\pgfkeys{/prAtEnd/custom style/.style={category=sectionIntro}}
 ```
 
 Note also that it is also possible to give options to the `proofEnd` environment, but it is usually useless, as it will automatically pick the parameters from the last `theoremEnd` environment. However, if for some reasons you want to change the options of the proof only, you can do it, but do it as your own risks ;)
