@@ -30,5 +30,6 @@ package: doc demo
 	cp demo.pdf buildpratend/proof-at-the-end/proof-at-the-end_demo.pdf
 	cd buildpratend/ && tar -zcvf proof-at-the-end.tar.gz proof-at-the-end/
 	@echo "Package built in buildpratend/proof-at-the-end.tar.gz"
+	@echo "################ /!\ Make sure to update the version in proof-at-the-end.sty"
 
 .PHONY: demo clean doc package
