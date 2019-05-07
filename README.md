@@ -218,7 +218,7 @@ We predefined some pretty common styles/options. The full list is at the end of 
 - `end`: put the proof in appendix
 - `all end`: put both the theorem and the proof in appendix
 - `debug`: make sure the proof is written in the main text as well. Practical when you write the proof to be able to use synctex (if you use synctex with the proof in appendix, your will be unfortunately moved to a temporary file that this library is using... so **make sure you don't modify the files named like `prattheenddefaultcategory.tex` or all your changes will be lost at the next compilation**!).
-- `one big link`: if you prefer to have a single big link instead of two links (one for the proof one for the page)
+- `one big link`: if you prefer to have a single big link instead of two links (one for the proof, one for the page)
 - `one big link translated=Your translation`: to change/translate the text of the link easily
 - `text proof translated=Your translation`: to change/translate the text of the proof at the end easily
 - `global custom defaults`: empty style that you can modify to change the configuration (globally)
@@ -237,7 +237,7 @@ Let's imagine that you have some proofs that are easy to do, and some proofs tha
 \end{proofEnd}
 ```
 
-and give in the section where you would like to display the proofs the code this category name to `\printProofs`:
+and give this category name to `\printProofs` in the section where you would like to display the proofs:
 
 ```latex
 \printProofs[mylongproofs]
@@ -248,7 +248,7 @@ and give in the section where you would like to display the proofs the code this
 You can also move some text in the appendix by using:
 
 ```latex
-\textEnd{You text that should go in appendix}
+\textEnd{Your text that should go in appendix}
 ```
     
 You can also give it a category as explained above, or configure it to be displayed in both the main text and at the end of the file with:
