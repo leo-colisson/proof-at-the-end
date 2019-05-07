@@ -6,6 +6,8 @@
 \usepackage{proofAtTheEnd} % with default options...
 % Or by putting in the 'conf' option the default configuration you want:
 %\usepackage[conf={normal, one big link}]{proofAtTheEnd}
+%\usepackage[conf={normal, one big link=Goto proof}]{proofAtTheEnd}
+%\usepackage[conf={one big link translated=Aller à la preuve page}]{proofAtTheEnd}
 
 %%% If you want to use options with macros, you cannot
 % use directly the package options, so just modify
@@ -139,8 +141,8 @@ Or keep the link, but remove the reference (practical for stared versions):
 
 
 \pgfkeys{/prAtEnd/french/.style={
-    text link={Voir \hyperref[proof:prAtEnd\pratendcountercurrent]{preuve} à la page~\pageref{proof:prAtEnd\pratendcountercurrent}},
-    text proof={Preuve de \string\autoref{thm:prAtEnd\pratendcountercurrent}}
+    one big link translated={Voir preuve page},
+    text proof translated={Preuve du}
   }
 }
 \begin{theoremEnd}[french]{thm}%% See how "french" is defined just above

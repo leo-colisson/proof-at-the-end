@@ -147,7 +147,7 @@ Note however that for now it is *not* possible to use macros directly inside the
 
 ```latex
 \pgfkeys{/prAtEnd/global custom defaults/.style={
-    text link={\hyperref[proof:prAtEnd\pratendcountercurrent]{See proof on page~\pageref*{proof:prAtEnd\pratendcountercurrent}}}
+    one big link={Go to proof on page~\pageref*{proof:prAtEnd\pratendcountercurrent}}
   }
 }
 ```
@@ -276,6 +276,18 @@ If you want to (re)state a theorem *before* its definition (say in the introduct
 \end{proofEnd}
 ```
 
+### Translate the links ###
+
+The more powerful way to change the text of the links is to redefine `text link` and `text proof` (see section List of options for more details). However we defined also some easy way to redefine the text using `one big link translated` and `text proof translated`. For example, to create your `french` style you can do:
+
+```latex
+\pgfkeys{/prAtEnd/french/.style={
+    one big link translated={Voir preuve page},
+    text proof translated={Preuve du}
+  }
+}
+```
+
 ### Write a sketch of proof in the main text ###
 
 You can include a sketch of proof in the main text by simply adding a proof in between `theoremEnd` and `proofEnd`. An alias option `see full proof` can also be used to change the link into "See full proof on page X":
@@ -294,7 +306,7 @@ You can include a sketch of proof in the main text by simply adding a proof in b
 
 ## List of options ##
 
-Here is the list of fundamental options supported. Most options have a `no` version, with `no ` written before. Note that you may prefer to use directly the alias/styles (see next paragraph).
+Here is the list of fundamental options supported. Most options have a `no` version, with `no ` written before. Note that you may prefer to use directly the alias/styles (see next paragraph) as the options listed here are quite fundamental and atomic.
 
 - `category`: category of the proof (if you want to put proofs at several places), can be anything
 - `proof here`/`no proof here`: put (or not) the proof in the main text
@@ -320,9 +332,11 @@ Here are all the alias/styles (you can create you own as well), they are practic
 - `no link to theorem`: Remove the link from the proof to the theorem, alias of `text proof={\proofname}`
 - `stared` (or `no number`): when you use the stared version of a theorem you don't have any number, so autoref fails to write a nice link to the theorem. This option changes the text of "Proof", by keeping the link but writting only `Proof`. Equivalent to `text proof={\string\mbox{\string\hyperref[thm:prAtEnd\pratendcountercurrent]{\proofname}}}`
 - `see full proof`: useful when you want to write in the main text only a sketch of proof, this alias writes a link `See full proof on page X`. Equivalent to `text link={See \hyperref[proof:prAtEnd\pratendcountercurrent]{full proof} on page~\pageref{proof:prAtEnd\pratendcountercurrent}}`
-- `one big link`: instead of two links, one for page, one for proof, put just one link around everything. Equivalent of `text link={\hyperref[proof:prAtEnd\pratendcountercurrent]{See proof on page~\pageref*{proof:prAtEnd\pratendcountercurrent}}}`.
+- `one big link`: instead of two links, one for page, one for proof, put just one link around everything. It can also accept an optional argument which will be the text of the link, like `one big link=Go to the proof`. The default value is `See proof on page~\pageref*{proof:prAtEnd\pratendcountercurrent}`.
+- `one big link translated`: This is like `one big link`, but automatically add the page at the end (and a big link around). Practical to quickly define a translation like `one big link translated=Voir preuve page`. See also `text proof translated`.
 - `default text link`: default text for the link to the proof, equivalent of `text link={See \hyperref[proof:prAtEnd\pratendcountercurrent]{proof} on page~\pageref{proof:prAtEnd\pratendcountercurrent}}`
 - `default text proof`: default text for the proof in appendix, equivalent of `text proof={Proof of \string\autoref{thm:prAtEnd\pratendcountercurrent}}`
+- `text proof translated`: like `default text proof`, but takes one argument and use it instead of `Proof of`. Example: `text proof translated={Preuve du}`
 - `bare defaults`: default style that is loaded before anything else that configure by default a link to the proof, put the proof in appendix, use the category `defaultcategory`. It is an alias of `end, link to proof, no restate,category=defaultcategory, default text link,default text proof,restate command=pratenddummymacro`.
 - `configuration options`: style that contains the options used to load the package. It is called right after `bare defaults`. Note that you cannot insert macro in the options, overwrite `global custom defaults` instead
 - `global custom defaults`: empty style that you can overwrite to change the global defaults
