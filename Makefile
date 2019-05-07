@@ -1,7 +1,7 @@
 SRC_DIR:=$(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 # CTAN description:
 # Summary: A package to move proofs in appendix
-# This small package aims to provide a way to easily move proofs in the appendix. You can (among other) move proofs in different places/sections, create links from theorem to proofs, restate theorems, add comments in appendix...
+# This package aims to provide a way to easily move proofs in the appendix. You can (among other) move proofs in different places/sections, create links from theorem to proofs, restate theorems, add comments in appendix...
 
 demo:
 	pdflatex demo.tex && pdflatex demo.tex

@@ -21,6 +21,8 @@ NB: This project is hosted on github at [https://github.com/leo-colisson/proof-a
 
 Disclaimer: This package is still in beta and not considered as stable.
 
+This package is licensed under LPPL v1.3.
+
 ## Demo ##
 
 If you just want to see an example of what you can do, you can directly open the file `demo.pdf` (also available online at [https://github.com/leo-colisson/proof-at-the-end/raw/master/demo.pdf](https://github.com/leo-colisson/proof-at-the-end/raw/master/demo.pdf)) to see what is possible, or generate it with
