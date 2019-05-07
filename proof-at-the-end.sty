@@ -208,7 +208,7 @@
   \temprest%
     #4%
   \end{restatable*}%
-}
+}{}
 
 \NewDocumentEnvironment{theoremEnd}{O{}mO{}+b}{
   % The first facultative argument will be the options: type of proof you want, the file to which you want to write...
@@ -261,7 +261,7 @@
     \global\expandafter\edef\csname \pratendcustomrestate\endcsname{\noexpand\csname prAtEndRestate\pratendcountercurrent\endcsname}%
     \appendtofile{\prefixPrAtEndFiles\category.tex}{\string\begin{restatable}[#3]{#2}{prAtEndRestate\pratendcountercurrent}\string\label{thm:prAtEnd\pratendcountercurrent}\detokenize{#4}\string\end{restatable}}%
   \fi%
-}
+}{}
 
 \NewDocumentEnvironment{proofEnd}{O{}+b}{
   \pgfkeys{%
@@ -287,7 +287,7 @@
   \ifproofend%
     \appendtofile{\prefixPrAtEndFiles\category.tex}{\string\begin{proof}[\pratendtextproof]\string\phantomsection\string\label{proof:prAtEnd\pratendcountercurrent}\detokenize{#2}\string\end{proof}}%
   \fi%
-}
+}{}
 
 
 %%%%% Text in appendix

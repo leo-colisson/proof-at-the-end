@@ -175,12 +175,13 @@ Finally, it can be practical to define custom environments to avoid typing alway
   \begin{theoremEnd}[normal,#2]{thm}[#1]%
     #3%
   \end{theoremEnd}%
-}
+}{}
+% Do not forget the second parameter or you might get Missing \begin{document} error
 \NewDocumentEnvironment{proofE}{O{}+b}{%
   \begin{proofEnd}[#1]%
     #2%
   \end{proofEnd}%
-}
+}{}
 ```
 That you could use like that:
 
