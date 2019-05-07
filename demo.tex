@@ -50,7 +50,7 @@
 
 \section{Demo of proof-at-the-end}
 
-NB: This file is just a demo of proof-at-the-end.  You can find the documentation, sources, and example of proof-at-the-end at \url{https://github.com/leo-colisson/proof-at-the-end}.
+NB: This file is just a demo of proof-at-the-end.  You can find the documentation, sources, and example of proof-at-the-end at \url{https://github.com/leo-colisson/proof-at-the-end}. Note that this file is getting a bit big but it should contain more or less everything that is possible in this lib as it's also used to ``test'' the library.
 
 % And use \theoremProofEnd[<package options>]{theorem environment name}[Title]{Theorem}{Optional proof}
 \begin{theoremEnd}{thm}[Yes I can have a title]
@@ -85,7 +85,6 @@ And I can refer to my theorems using classic labels, like in \autoref{thm:ilikel
 \begin{proofEnd}
   And keep the proof with you!  
 \end{proofEnd}
-
 
 You can also put comments that appear only in the appendix.
 
@@ -214,6 +213,11 @@ And of course it is easy to define custom shortcuts, using in prelude:
 \begin{proofEnd}
   You just use ``see full proof'' as an option
 \end{proofEnd}
+
+It should also deal with protected commands: $\mathtt{mathtt}$:
+\begin{theoremEnd}[normal]{thm}[Title $\Delta$ et $\mathtt{Gad}$]
+  You can use commands that should be protected $\mathtt{See}$!
+\end{theoremEnd}
 
 \section{Section with restate before theorem}\label{sec:restatebefore}
 

@@ -44,7 +44,7 @@
 \newcommand*\eraseIfNeeded[1]{%
   % A macro 'pratendmacrocat{category}' is created to check
   % if it's the first time we write in this category file.
-  \edef\macroname{pratendmacrocat#1}%
+  \protected@edef\macroname{pratendmacrocat#1}%
   \ifcsdef{\macroname}{% The macro exists, nothing to do
   }{ % The macro does not exists, create it, and empty the file
     \global\expandafter\def\csname \macroname\endcsname{true}%
@@ -89,7 +89,7 @@
   %% to make sure the proof for normal theorems are changed
   text proof/.code={\def\pratendtextproof{#1}},
   %% Custom restate command
-  restate command/.code={\edef\pratendcustomrestate{#1}},
+  restate command/.code={\protected@edef\pratendcustomrestate{#1}},
   %% (Re)stated before
   %% If the theorems has been stated before, then we just need to put the restate command in
   %% place of the argument, and we set this value to true:
@@ -202,9 +202,9 @@
 
 \NewDocumentEnvironment{theoremEndRestateBefore}{mO{}m+b}{
   \stepcounter{counterAllProofEnd}%
-  \edef\currcounterval{\roman{counterAllProofEnd}}
-  \edef\temprest{\noexpand\begin{restatable*}[#2]{#1}{prAtEndRestate\currcounterval}\noexpand\label{thm:prAtEnd\currcounterval}}%
-  \global\expandafter\edef\csname #3\endcsname{\currcounterval}%
+  \protected@edef\currcounterval{\roman{counterAllProofEnd}}
+  \protected@edef\temprest{\noexpand\begin{restatable*}[#2]{#1}{prAtEndRestate\currcounterval}\noexpand\label{thm:prAtEnd\currcounterval}}%
+  \expandafter\protected@xdef\csname #3\endcsname{\currcounterval}%
   \temprest%
     #4%
   \end{restatable*}%
@@ -223,15 +223,16 @@
     #1
   }%
   \stepcounter{counterAllProofEnd}%
-  %% Pre-expand the restatable environment
-  \edef\temprest{\noexpand\begin{restatable}[#3]{#2}{prAtEndRestate\roman{counterAllProofEnd}}}%
+  %% Pre-expand the restatable environment. Need protected
+  %% otherwise can't have $\mathtt{G}$ in the title 
+  \protected@edef\temprest{\noexpand\begin{restatable}[#3]{#2}{prAtEndRestate\roman{counterAllProofEnd}}}%
   %% Create the file if it's the first time
   \eraseIfNeeded{\category}%
   %% If the theorem must be written here:
   \unless\ifallattheend%
     %% Restate the theorem if it was stated before:
     \ifrestatedbefore%
-      \global\edef\pratendcountercurrent{\csname #4\endcsname} % Store the current (alpha value of the) counter
+      \protected@xdef\pratendcountercurrent{\csname #4\endcsname} % Store the current (alpha value of the) counter
       \csname prAtEndRestate\pratendcountercurrent\endcsname % Restate the theorem
     \fi%
     %%  Otherwise just state the theorem in a restatable environment
@@ -242,10 +243,10 @@
       \end{restatable}%
       %% Store the current (alpha value of the) counter
       %% in \pratendcountercurrent
-      \global\edef\pratendcountercurrent{\roman{counterAllProofEnd}} %
+      \protected@xdef\pratendcountercurrent{\roman{counterAllProofEnd}} %
     \fi%
     %% Create a custom alias to restate the theorem
-    \global\expandafter\edef\csname \pratendcustomrestate\endcsname{\noexpand\csname prAtEndRestate\pratendcountercurrent\endcsname}%
+    \expandafter\protected@xdef\csname \pratendcustomrestate\endcsname{\noexpand\csname prAtEndRestate\pratendcountercurrent\endcsname}%
     %% Restate the theorem if needed in appendix
     \ifrestatethm
       \appendtofile{\prefixPrAtEndFiles\category.tex}{\string\prAtEndRestate\pratendcountercurrent*}
@@ -256,9 +257,9 @@
   \ifallattheend%
     %% Store the current (alpha value of the) counter
     %% in \pratendcountercurrent
-    \global\edef\pratendcountercurrent{\roman{counterAllProofEnd}}
+    \protected@xdef\pratendcountercurrent{\roman{counterAllProofEnd}}
     %% Create a custom alias to restate the theorem
-    \global\expandafter\edef\csname \pratendcustomrestate\endcsname{\noexpand\csname prAtEndRestate\pratendcountercurrent\endcsname}%
+    \expandafter\protected@xdef\csname \pratendcustomrestate\endcsname{\noexpand\csname prAtEndRestate\pratendcountercurrent\endcsname}%
     \appendtofile{\prefixPrAtEndFiles\category.tex}{\string\begin{restatable}[#3]{#2}{prAtEndRestate\pratendcountercurrent}\string\label{thm:prAtEnd\pratendcountercurrent}\detokenize{#4}\string\end{restatable}}%
   \fi%
 }{}
