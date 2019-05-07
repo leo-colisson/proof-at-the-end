@@ -8,12 +8,6 @@
 \RequirePackage{catchfile}
 \RequirePackage{pgfkeys}
 \RequirePackage{xparse}
-\RequirePackage{environ}
-
-% \DeclareOption{red}{\renewcommand{\wordcolour}{sharelatexcolour}}
-% \DeclareOption{blue}{\renewcommand{\wordcolour}{mybluecolour}}
-% \DeclareOption*{\PackageWarning{examplepackage}{Unknown ‘\CurrentOption’}}
-% \ProcessOptions\relax
 
 \RequirePackage{kvoptions}
 
@@ -29,6 +23,8 @@
 \DeclareLocalOptions{conf}% \pratendOptdefconf contains the proof
 \ProcessKeyvalOptions*
 
+% \DeclareOption*{\PackageWarning{proofAtTheEnd}{Unknown}}
+% \ProcessOptions\relax
 
 \newwrite\appendwrite
 \newcommand*\appendtofile[2]{%
@@ -85,8 +81,8 @@
   link to proof/.is if=linktoproof,
   no link to proof/.style={link to proof=false},
   %% Put the theorem and proof only in appendix
-  all end/.is if=allattheend,
-  no all end/.style={all end=false},
+  opt all end/.is if=allattheend,
+  no opt all end/.style={opt all end=false},
   %% Text of link
   text link/.code={\def\pratendtextlink{#1}},
   %% Text of proof. Make sure also to "\renewcommand*{\proofname}{Name of the proof}"
@@ -107,7 +103,7 @@
   %%%% Alias and styles
   normal/.style={
     proof here,
-    no all end,
+    no opt all end,
     no proof end,
     no link to proof,
     no restate,
@@ -115,14 +111,20 @@
   },
   proof at the end/.style={
     no proof here,
-    no all end,
+    no opt all end,
     proof end,
     no both,
   },
   end/.style={
-    proof at the end
+    proof at the end,
+    link to proof,
+  },
+  all end/.style={
+    end,
+    opt all end,
   },
   debug/.style={
+    no opt all end,
     proof here
   },
   no link to theorem/.style={ % Remove the link to the theorem
@@ -137,24 +139,67 @@
   see full proof/.style={
     text link={See \hyperref[proof:prAtEnd\pratendcountercurrent]{full proof} on page~\pageref{proof:prAtEnd\pratendcountercurrent}}
   },
+  one big link/.style={
+    text link={\hyperref[proof:prAtEnd\pratendcountercurrent]{See proof on page~\pageref*{proof:prAtEnd\pratendcountercurrent}}}
+  },
+  default text link/.style={
+    text link={See \hyperref[proof:prAtEnd\pratendcountercurrent]{proof} on page~\pageref{proof:prAtEnd\pratendcountercurrent}},
+  },
+  default text proof/.style={
+    text proof={Proof of \string\autoref{thm:prAtEnd\pratendcountercurrent}},
+  },
   %%%% Defaults
-  defaults/.style={
+  bare defaults/.style={
     end,
     link to proof,
     no restate,
     category=defaultcategory,
-    text link={See \hyperref[proof:prAtEnd\pratendcountercurrent]{proof} on page~\pageref{proof:prAtEnd\pratendcountercurrent}},
-    text proof={Proof of \string\autoref{thm:prAtEnd\pratendcountercurrent}},
+    default text link,
+    default text proof,
     restate command=pratenddummymacro,
   },
-  custom defaults/.style={
+  configuration options/.style={
+    % This styles will contain the configuration
+    % given as options of the package like:
+    % \usepackage[conf={normal, no link to proof}]{proofAtTheEnd}
+    % See below how it's defined. The options does not accept
+    % macros, so if you need to write macro edit instead the
+    % style "global custom defaults" or
+    % "local custom defaults" for local changes instead.
+  },
+  global custom defaults/.style={
+    %% you can put in this style any global defaults
+    %% that should overwrite the usual defaults.
+  },
+  local custom defaults/.style={
     %% you can put in this style any overwrite of the defaults
-    %% or use directly the options of the package like
-    %% \usepackage[conf={no link to proof}]{proofAtTheEnd}
-    \pratendOptconf
+    %% that should be "local" and changed over the file, like
+    % the category for a given section.
+  },
+  all defaults/.style={
+    %% Load all the style that sets the default values
+    bare defaults,
+    configuration options,
+    global custom defaults,
+    local custom defaults,
   },
 }
 
+\edef\mydefinepgfkeys{\noexpand\pgfkeys{%
+  /prAtEnd/.cd,%
+  configuration options/.style={
+    % This styles will contain the configuration
+    % given as options of the package like:
+    % \usepackage[conf={normal, no link to proof}]{proofAtTheEnd}
+    % See below how it's defined. The options does not accept
+    % macros, so if you need to write macro edit instead the
+    % style "global custom defaults" or
+    % "local custom defaults" for local changes instead.
+    \unexpanded\expandafter{\pratendOptconf}
+  },
+}}
+\show\mydefinepgfkeys%
+\mydefinepgfkeys
 
 \newcounter{counterAllProofEnd}
 \stepcounter{counterAllProofEnd}
@@ -178,8 +223,7 @@
   \global\def\pratendlastoptions{#1}%
   \pgfkeys{%
     /prAtEnd/.cd,
-    defaults,
-    custom defaults,
+    all defaults,
     #1
   }%
   \stepcounter{counterAllProofEnd}%
@@ -226,9 +270,8 @@
 \NewDocumentEnvironment{proofEnd}{O{}+b}{
   \edef\pgfkeysexpanded{\noexpand\pgfkeys{%
     /prAtEnd/.cd,
-    defaults,
-    custom defaults,
-    \pratendlastoptions,
+    all defaults,
+    \unexpanded\expandafter{\pratendlastoptions},
     #1
   }}%
   \pgfkeysexpanded%
@@ -257,7 +300,7 @@
   % Use it to put normal text in Appendix.
   \pgfkeys{
     /prAtEnd/.cd,
-    defaults,
+    all defaults,
     #1
   }%
   \ifboth%

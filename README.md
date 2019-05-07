@@ -140,10 +140,72 @@ You can easily create your own styles like that:
 You can also change the default configuration when you load the package by nesting the configuration into a `conf` key:
 
 ```latex
-\usepackage[conf={normal}]{proofAtTheEnd}
+\usepackage[conf={normal, one big link}]{proofAtTheEnd}
 ```
 
-Note also that it is also possible to give options to the `proofEnd` environment, but it is usually useless, as it will automatically pick the parameters from the last `theoremEnd` environment. However, if for some reasons you want to change the options of the proof only, you can do it (may be practical to write shortcuts), but do it as your own risks ;)
+Note however that for now it is *not* possible to use macros directly inside the options when you load the package, so if you need to use more complicated configuration, you can overwrite the `global custom defaults` style for global configuration, and the `local custom defaults` style for local configuration (useful for example if you want to define a category for a single section):
+
+```latex
+\pgfkeys{/prAtEnd/global custom defaults/.style={
+    text link={\hyperref[proof:prAtEnd\pratendcountercurrent]{See proof on page~\pageref*{proof:prAtEnd\pratendcountercurrent}}}
+  }
+}
+```
+
+and for local configuration:
+```latex
+\pgfkeys{/prAtEnd/local custom defaults/.style={
+    category=greattheorem
+  }
+}
+```
+
+Finally, it can be practical to define custom environments to avoid typing always `theoremEnd`:
+
+```latex
+\NewDocumentEnvironment{thmE}{O{}O{}+b}{%
+  \begin{theoremEnd}[normal,#2]{thm}[#1]%
+    #3%
+  \end{theoremEnd}%
+}
+\NewDocumentEnvironment{proofE}{O{}+b}{%
+  \begin{proofEnd}[#1]%
+    #2%
+  \end{proofEnd}%
+}
+```
+That you could use like that:
+
+```latex
+\begin{thmE}[Title]
+  Here is a normal theorem with the proof in the main text.
+\end{thmE}
+\begin{proofE}
+  The (optional) proof
+\end{proofE}
+  
+\begin{thmE}[Title][end]
+  Here is a theorem whose proof goes to the end.
+\end{thmE}
+\begin{proofE}
+  The proof
+\end{proofE}
+
+\begin{thmE}[Title][all end]
+  Here is a theorem that goes with the proof at the end.
+\end{thmE}
+\begin{proofE}
+  The proof
+\end{proofE}
+```
+
+Finally, note that you can redefine the style `custom defaults` (empty by default) in order to change the default style in some specific parts of the file. It can be pretty practical for example to define a category for a specific section:
+
+```latex
+\pgfkeys{/prAtEnd/custom style/.style={category=sectionIntro}}
+```
+
+Note also that it is also possible to give options to the `proofEnd` environment, but it is usually useless, as it will automatically pick the parameters from the last `theoremEnd` environment. However, if for some reasons you want to change the options of the proof only, you can do it, but do it as your own risks ;)
 
 ### Categories, or how to move proofs in different sections ###
 
@@ -245,7 +307,7 @@ Here is the list of fundamental options supported. Most options have a `no` vers
 - `proof end`/`no proof end`: display the proof in appendix
 - `restate`/`no restate`: restate the theorem in appendix
 - `link to proof`/`no link to proof`: Display a link to the proof in the main text
-- `all end`/`no all end`: put the theorem and proof only in appendix
+- `opt all end`/`no opt all end`: put the theorem and proof only in appendix. You may prefer the alias `all end`, that also makes sure that the proof is indeed displayed in appendix.
 - `text link`: text of the link to the proof, defaults to
 
   `{See \hyperref[proof:prAtEnd\pratendcountercurrent]{proof} on page~\pageref{proof:prAtEnd\pratendcountercurrent}}`
@@ -256,14 +318,22 @@ Here is the list of fundamental options supported. Most options have a `no` vers
 
 Here are all the alias/styles (you can create you own as well), they are practical to quickly define a behaviours, but are made of the basic options listed above:
 
-- `normal`: like a 'normal' theorem, without any proof in the appendix, and with a proof displayed. Shortcut for `proof here, no all end, no proof end, no link to proof, no restate, no both`.
-- `proof at the end` (or just `end`): theorems whose proof need to go in the appendix. Shorcut for `no proof here, no all end, proof end, no both`.
-- `debug`: make sure the proof is written in the main text as well (alias to `proof here`), it is quite practical to use when you write a proof to be able to use synctex features to move between the pdf and the file.
+- `normal`: like a 'normal' theorem, without any proof in the appendix, and with a proof displayed in the main text. Shortcut for `proof here, no all end, no proof end, no link to proof, no restate, no both`.
+- `end`: theorems whose proof need to go in the appendix. Shorcut for `proof at the end, link to proof`.
+- `all end`: makes sure both the theorem and the proof are in appendix. Alias of `end, opt all end`.
+- `proof at the end`: theorems whose proof need to go in the appendix contrary to `end` it does not make sure that there is a link to the proof.  Shorcut for `no proof here, no all end, proof end, no both`.
+- `debug`: make sure the proof is written in the main text as well (alias of `proof here, no opt all end`), it is quite practical to use when you write a proof to be able to use synctex features to move between the pdf and the file.
 - `no link to theorem`: Remove the link from the proof to the theorem, alias of `text proof={\proofname}`
 - `stared` (or `no number`): when you use the stared version of a theorem you don't have any number, so autoref fails to write a nice link to the theorem. This option changes the text of "Proof", by keeping the link but writting only `Proof`. Equivalent to `text proof={\string\mbox{\string\hyperref[thm:prAtEnd\pratendcountercurrent]{\proofname}}}`
 - `see full proof`: useful when you want to write in the main text only a sketch of proof, this alias writes a link `See full proof on page X`. Equivalent to `text link={See \hyperref[proof:prAtEnd\pratendcountercurrent]{full proof} on page~\pageref{proof:prAtEnd\pratendcountercurrent}}`
-- `defaults`: default style that is loaded before anything else that configure by default a link to the proof, put the proof in appendix, use the category `defaultcategory`. It is an alias of `end, link to proof, no restate, category=defaultcategory, text link={See \hyperref[proof:prAtEnd\pratendcountercurrent]{proof} on page~\pageref{proof:prAtEnd\pratendcountercurrent}}, text proof={Proof of \string\autoref{thm:prAtEnd\pratendcountercurrent}}, restate command=pratenddummymacro`.
-- `custom defaults`: style that is empty (contains only the option you sent to the package) that is overwritten and loaded right after `defaults`. Useful if you want to overwrite the default.
+- `one big link`: instead of two links, one for page, one for proof, put just one link around everything. Equivalent of `text link={\hyperref[proof:prAtEnd\pratendcountercurrent]{See proof on page~\pageref*{proof:prAtEnd\pratendcountercurrent}}}`.
+- `default text link`: default text for the link to the proof, equivalent of `text link={See \hyperref[proof:prAtEnd\pratendcountercurrent]{proof} on page~\pageref{proof:prAtEnd\pratendcountercurrent}}`
+- `default text proof`: default text for the proof in appendix, equivalent of `text proof={Proof of \string\autoref{thm:prAtEnd\pratendcountercurrent}}`
+- `bare defaults`: default style that is loaded before anything else that configure by default a link to the proof, put the proof in appendix, use the category `defaultcategory`. It is an alias of `end, link to proof, no restate,category=defaultcategory, default text link,default text proof,restate command=pratenddummymacro`.
+- `configuration options`: style that contains the options used to load the package. It is called right after `bare defaults`. Note that you cannot insert macro in the options, overwrite `global custom defaults` instead
+- `global custom defaults`: empty style that you can overwrite to change the global defaults
+- `local custom defaults`: empty style that you can overwrite to change the "local" defaults, like category
+- `all defaults`: all the defaults, equivalent of `bare defaults, configuration options, global custom defaults, local custom defaults`
 
 
 ## Contributions ##
