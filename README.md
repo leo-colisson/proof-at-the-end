@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This small package aims to provide a way to easily move proofs in the appendix. You can:
+This package aims to provide a way to easily move proofs in the appendix. You can:
 
 - Move proofs in different places/sections by giving different "categories" to the theorems
 - Create links from theorem to proof, and from proof to theorem
@@ -23,7 +23,7 @@ Disclaimer: This package is still in beta and not considered as stable.
 
 ## Demo ##
 
-If you just want to see an example of what you can do, you can directly open the file `demo.pdf` to see what is possible, or generate it with
+If you just want to see an example of what you can do, you can directly open the file `demo.pdf` (also available online at [https://github.com/leo-colisson/proof-at-the-end/raw/master/demo.pdf](https://github.com/leo-colisson/proof-at-the-end/raw/master/demo.pdf)) to see what is possible, or generate it with
 
 ```bash
 git clone https://github.com/leo-colisson/proof-at-the-end.git
@@ -32,7 +32,9 @@ pdflatex demo.tex && pdflatex demo.tex
 
 ## Quickstart ##
 
-To use this package, if it's not yet in your CTAN distribution, first download the `proof-at-the-end.sty` file and insert it in the root of your project with the following commands (you can also clone this repository if you prefer). It also requires a recent version of xparse, so for simplicity we included the sty file of xparse in this repository as well:
+### Install ###
+
+If your CTAN distribution is recent enough, you have nothing to do. Otherwise if it's not yet in your CTAN distribution, first download the `proof-at-the-end.sty` file and insert it in the root of your project with the following commands on unix (you can also clone this repository if you prefer, or just manually download or copy/paste the files on Windows). It also requires a recent version of xparse, so for simplicity we included the sty file of xparse in this repository as well:
 
 ```bash
 cd <your project>
@@ -41,7 +43,11 @@ wget ${repopratend}/master/proof-at-the-end.sty
 wget ${repopratend}/master/xparse.sty
 ```
 
-Then, load it in your project:
+That's all!
+
+### Use in your project ###
+
+Now, you can load the library in your project by simply using:
 
 ```latex
 \usepackage{proof-at-the-end}
@@ -200,6 +206,21 @@ That you could use like that:
 ```
 
 Note also that it is also possible to give options to the `proofEnd` environment, but it is usually useless, as it will automatically pick the parameters from the last `theoremEnd` environment. However, if for some reasons you want to change the options of the proof only, you can do it, but do it as your own risks ;)
+
+### Usual styles ###
+
+We predefined some pretty common styles/options. The full list is at the end of this document, but here is a list of the most practical ones:
+
+- `normal`: turn the theorem into a "normal" theorem, with the proof in the main text and nothing in appendix
+- `category=yourowncategory`: change the category of the theorem (see next sub-section)
+- `end`: put the proof in appendix
+- `all end`: put both the theorem and the proof in appendix
+- `debug`: make sure the proof is written in the main text as well. Practical when you write the proof to be able to use synctex (if you use synctex with the proof in appendix, your will be unfortunately moved to a temporary file that this library is using... so **make sure you don't modify the files named like `prattheenddefaultcategory.tex` or all your changes will be lost at the next compilation**!).
+- `one big link`: if you prefer to have a single big link instead of two links (one for the proof one for the page)
+- `one big link translated=Your translation`: to change/translate the text of the link easily
+- `text proof translated=Your translation`: to change/translate the text of the proof at the end easily
+- `global custom defaults`: empty style that you can modify to change the configuration (globally)
+- `local custom defaults`: empty style that you can modify to change the configuration (locally). Practical to set a category for a single section.
 
 ### Categories, or how to move proofs in different sections ###
 

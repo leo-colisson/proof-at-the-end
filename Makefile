@@ -24,6 +24,7 @@ doc:
 package: doc demo
 	rm -rf buildpratend/proof-at-the-end/
 	mkdir -p buildpratend/proof-at-the-end/
+	cp README.md buildpratend/proof-at-the-end/
 	cp buildpratend/proof-at-the-end.pdf buildpratend/proof-at-the-end/
 	cd buildpratend/proof-at-the-end/ && makedtx -author "Léo Colisson" -dir $(SRC_DIR) -src "proof-at-the-end\.sty=>proof-at-the-end.sty" -doc ../doc/proof-at-the-end_doc.tex proof-at-the-end
 	cp demo.pdf buildpratend/proof-at-the-end/proof-at-the-end_demo.pdf
