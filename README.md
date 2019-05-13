@@ -230,6 +230,8 @@ We predefined some pretty common styles/options. The full list is at the end of 
 - `debug`: make sure the proof is written in the main text as well. Practical when you write the proof to be able to use synctex (if you use synctex with the proof in appendix, your will be unfortunately moved to a temporary file that this library is using... so **make sure you don't modify the files named like `prattheenddefaultcategory.tex` or all your changes will be lost at the next compilation**!).
 - `one big link`: if you prefer to have a single big link instead of two links (one for the proof, one for the page)
 - `one big link translated=Your translation`: to change/translate the text of the link easily
+- `text link section`: put a link looking like "See proof at section XX"
+- `text link section full proof`: put a link looking like "See full proof at section XX"
 - `text proof translated=Your translation`: to change/translate the text of the proof at the end easily
 - `global custom defaults`: empty style that you can modify to change the configuration (globally)
 - `local custom defaults`: empty style that you can modify to change the configuration (locally). Practical to set a category for a single section.
@@ -367,6 +369,8 @@ Here are all the alias/styles (you can create you own as well), they are practic
 - `see full proof`: useful when you want to write in the main text only a sketch of proof, this alias writes a link `See full proof on page X`. Equivalent to `text link={See \hyperref[proof:prAtEnd\pratendcountercurrent]{full proof} on page~\pageref{proof:prAtEnd\pratendcountercurrent}}`
 - `one big link`: instead of two links, one for page, one for proof, put just one link around everything. It can also accept an optional argument which will be the text of the link, like `one big link=Go to the proof`. The default value is `See proof on page~\pageref*{proof:prAtEnd\pratendcountercurrent}`.
 - `one big link translated`: This is like `one big link`, but automatically add the page at the end (and a big link around). Practical to quickly define a translation like `one big link translated=Voir preuve page`. See also `text proof translated`.
+- `text link section`: Put a link to the proof looking like "See proof at section X". Defaults to `text link={See \hyperref[proof:prAtEnd\pratendcountercurrent]{proof} at \autoref{proofsection:prAtEnd\pratendcountercurrent}}`
+- `text link section full proof`: Put a link to the proof looking like "See full proof at section X". Defaults to `text link={See \hyperref[proof:prAtEnd\pratendcountercurrent]{full proof} at \autoref{proofsection:prAtEnd\pratendcountercurrent}}`
 - `default text link`: default text for the link to the proof, equivalent of `text link={See \hyperref[proof:prAtEnd\pratendcountercurrent]{proof} on page~\pageref{proof:prAtEnd\pratendcountercurrent}}`
 - `default text proof`: default text for the proof in appendix, equivalent of `text proof={Proof of \string\autoref{thm:prAtEnd\pratendcountercurrent}}`
 - `text proof translated`: like `default text proof`, but takes one argument and use it instead of `Proof of`. Example: `text proof translated={Preuve du}`

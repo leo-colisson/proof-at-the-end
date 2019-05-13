@@ -8,6 +8,7 @@
 %\usepackage[conf={normal, one big link}]{proof-at-the-end}
 %\usepackage[conf={normal, one big link=Goto proof}]{proof-at-the-end}
 %\usepackage[conf={one big link translated=Aller à la preuve page}]{proof-at-the-end}
+%\usepackage[conf={text link section}]{proof-at-the-end}
 
 %%% If you want to use options with macros, you cannot
 % use directly the package options, so just modify
@@ -62,6 +63,13 @@ NB: This file is just a demo of proof-at-the-end.  You can find the documentatio
 \end{proofEnd}
 
 And I can refer to my theorems using classic labels, like in \autoref{thm:ilikelabels}.
+
+\begin{theoremEnd}[text link section]{thm}[Changing link]
+  It is possible to change the link.
+\end{theoremEnd}
+\begin{proofEnd}
+  Here I'm using ``text link section''.
+\end{proofEnd}
 
 \begin{theoremEnd}[category=greattheorem, end]{thm}[Different categories]
   You can also create several categories, and put the proofs in different sections.

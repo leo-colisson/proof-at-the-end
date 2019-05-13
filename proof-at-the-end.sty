@@ -152,6 +152,12 @@
   one big link translated/.style={
     one big link={#1~\pageref*{proof:prAtEnd\pratendcountercurrent}}
   },
+  text link section/.style={%
+      text link={See \hyperref[proof:prAtEnd\pratendcountercurrent]{proof} at \autoref{proofsection:prAtEnd\pratendcountercurrent}}
+  },
+  text link section full proof/.style={%
+      text link={See \hyperref[proof:prAtEnd\pratendcountercurrent]{full proof} at \autoref{proofsection:prAtEnd\pratendcountercurrent}}
+  },
   default text link/.style={
     text link={See \hyperref[proof:prAtEnd\pratendcountercurrent]{proof} on page~\pageref{proof:prAtEnd\pratendcountercurrent}},
   },
@@ -290,7 +296,7 @@
   \fi%
   %% Write the proof at the end
   \ifproofend%
-    \appendtofile{\prefixPrAtEndFiles\category.tex}{\string\begin{proof}[\pratendtextproof]\string\phantomsection\string\label{proof:prAtEnd\pratendcountercurrent}\detokenize{#2}\string\end{proof}}%
+    \appendtofile{\prefixPrAtEndFiles\category.tex}{\string\label{proofsection:prAtEnd\pratendcountercurrent}\string\begin{proof}[\pratendtextproof]\string\phantomsection\string\label{proof:prAtEnd\pratendcountercurrent}\detokenize{#2}\string\end{proof}}%
   \fi%
 }{}
 
