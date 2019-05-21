@@ -21,7 +21,7 @@ NB: This project is hosted on github at [https://github.com/leo-colisson/proof-a
 
 Disclaimer: This package is still in beta and not considered as stable.
 
-This package is licensed under LPPL v1.3.
+This package is licensed under LPPL v1.3, and the last version of this package on CTAN is 2019/05/21.
 
 ## Demo ##
 
