@@ -2,13 +2,15 @@
 \ProvidesPackage{proof-at-the-end}[2019/05/21 A package to move proofs in appendix]
  
 \RequirePackage{etoolbox}
-\RequirePackage{hyperref}
 \RequirePackage{thmtools}
 \RequirePackage{thm-restate}
 \RequirePackage{catchfile}
 \RequirePackage{pgfkeys}
 \RequirePackage{xparse}
-
+% Load hyperref at the end
+\AtEndPreamble{%
+  \RequirePackage{hyperref}
+}%
 \RequirePackage{kvoptions}
 
 %% https://tex.stackexchange.com/questions/109747/put-all-package-options-into-one-command

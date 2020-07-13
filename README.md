@@ -1,5 +1,7 @@
 # Proof-at-the-end, or how to move proofs in appendix in LaTeX
 
+WARNING: this package is definitely usable, but may not be as tested and stable as standard packages. Note also that it may change a bit in the future, but we will of course try to avoid as much as possible backward incompatibilities.
+
 ## Introduction
 
 This package aims to provide a way to easily move proofs in the appendix. You can:
@@ -113,6 +115,16 @@ NB: if you want to make sure all the references are linked correctly, make sure 
 
 
 Isn't it simple ?
+
+
+### A note on `hyperref`
+
+An older version of the package explicitely loaded `hyperref` with no option, and an option clash could occur if the user wanted to add options to `hyperref`. We now push the loading to the very end to avoid that issue, but if you want to load packages *after* `hyperref` (like `cleverref`), it is your job to include `hyperref`, for example by putting at the end of the preambule something like:
+
+```latex
+\usepackage[colorlinks]{hyperref}
+\usepackage{cleveref}
+```
 
 ## Use cases
 
