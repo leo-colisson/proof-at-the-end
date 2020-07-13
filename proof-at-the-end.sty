@@ -272,7 +272,7 @@
     \protected@xdef\pratendcountercurrent{\roman{counterAllProofEnd}}
     %% Create a custom alias to restate the theorem
     \expandafter\protected@xdef\csname \pratendcustomrestate\endcsname{\noexpand\csname prAtEndRestate\pratendcountercurrent\endcsname}%
-    \appendtofile{\prefixPrAtEndFiles\category.tex}{\string\begin{restatable}[#3]{#2}{prAtEndRestate\pratendcountercurrent}\string\label{thm:prAtEnd\pratendcountercurrent}\detokenize{#4}\string\end{restatable}}%
+    \appendtofile{\prefixPrAtEndFiles\category.tex}{\string\begin{restatable}[\detokenize{#3}]{#2}{prAtEndRestate\pratendcountercurrent}\string\label{thm:prAtEnd\pratendcountercurrent}\detokenize{#4}\string\end{restatable}}%
   \fi%
 }{}
 
