@@ -10,6 +10,7 @@
 % Load hyperref at the end
 \AtEndPreamble{%
   \RequirePackage{hyperref}
+  \RequirePackage{cleveref}
 }%
 \RequirePackage{kvoptions}
 
@@ -155,19 +156,19 @@
     one big link={#1~\pageref*{proof:prAtEnd\pratendcountercurrent}.}
   },
   text link section/.style={%
-      text link={See \hyperref[proof:prAtEnd\pratendcountercurrent]{proof} in \autoref{proofsection:prAtEnd\pratendcountercurrent}.}
+      text link={See \hyperref[proof:prAtEnd\pratendcountercurrent]{proof} in \cref{proofsection:prAtEnd\pratendcountercurrent}.}
   },
   text link section full proof/.style={%
-      text link={See \hyperref[proof:prAtEnd\pratendcountercurrent]{full proof} in \autoref{proofsection:prAtEnd\pratendcountercurrent}.}
+      text link={See \hyperref[proof:prAtEnd\pratendcountercurrent]{full proof} in \cref{proofsection:prAtEnd\pratendcountercurrent}.}
   },
   default text link/.style={
     text link={See \hyperref[proof:prAtEnd\pratendcountercurrent]{proof} on page~\pageref{proof:prAtEnd\pratendcountercurrent}.},
   },
   text proof translated/.style={
-    text proof={#1 \string\autoref{thm:prAtEnd\pratendcountercurrent}},
+    text proof={#1 \string\cref{thm:prAtEnd\pratendcountercurrent}},
   },
   default text proof/.style={
-    text proof={Proof of \string\autoref{thm:prAtEnd\pratendcountercurrent}},
+    text proof={Proof of \string\cref{thm:prAtEnd\pratendcountercurrent}},
   },
   %%%% Defaults
   bare defaults/.style={

@@ -46,7 +46,7 @@ repopratend="https://raw.githubusercontent.com/leo-colisson/proof-at-the-end"
 wget ${repopratend}/master/proof-at-the-end.sty
 wget ${repopratend}/master/xparse.sty
 ```
-If you have an old distribution of LaTeX (before 2018 basically, which is the case of Overleaf), you may also need a [more recent expl3](https://tex.stackexchange.com/questions/489646/expl3-and-recent-xparse-on-overleaf-no-expl3-loader-detected/489649?noredirect=1#comment1236409_489649). It is also very easy to install, just download the zip file [http://mirrors.ctan.org/install/macros/latex/contrib/l3kernel.tds.zip](http://mirrors.ctan.org/install/macros/latex/contrib/l3kernel.tds.zip), unzip, and copy the content of the directory `tex/latex/l3kernel/` into your project. On linux it's a matter of two commands in your project:
+If you have an old distribution of LaTeX (before 2018 basically, which is the case of Overleaf by default, but note that you can go in the option to upgrade the Overleaf LaTeX distribution), you may also need a [more recent expl3](https://tex.stackexchange.com/questions/489646/expl3-and-recent-xparse-on-overleaf-no-expl3-loader-detected/489649?noredirect=1#comment1236409_489649). It is also very easy to install, just download the zip file [http://mirrors.ctan.org/install/macros/latex/contrib/l3kernel.tds.zip](http://mirrors.ctan.org/install/macros/latex/contrib/l3kernel.tds.zip), unzip, and copy the content of the directory `tex/latex/l3kernel/` into your project. On linux it's a matter of two commands in your project:
 
 ```bash
 wget http://mirrors.ctan.org/install/macros/latex/contrib/l3kernel.tds.zip
