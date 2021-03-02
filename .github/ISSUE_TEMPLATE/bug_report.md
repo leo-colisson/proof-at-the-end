@@ -11,7 +11,7 @@ assignees: ''
 A clear and concise description of what the bug is. If possible, provide screenshots that may help to understand the issue. 
 
 **To Reproduce: Minimal Working Example**
-Provide here a  Minimal Working Example (MWE) code that exhibit the issue:
+Provide here a  Minimal Working Example (MWE) code that exhibits the issue (**please**, consider putting a MWE, it really helps):
 
 ```latex
 % Your code goes here
