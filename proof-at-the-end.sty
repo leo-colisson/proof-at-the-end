@@ -298,7 +298,11 @@
   \fi%
   %% Write the proof at the end
   \ifproofend%
-    \appendtofile{\prefixPrAtEndFiles\category.tex}{\string\label{proofsection:prAtEnd\pratendcountercurrent}\string\begin{proof}[\pratendtextproof]\string\phantomsection\string\label{proof:prAtEnd\pratendcountercurrent}\detokenize{#2}\string\end{proof}}%
+    %% The label alone adds some space, see e.g.
+    %% https://tex.stackexchange.com/questions/600118/selectlanguage-in-the-middle-of-text-causes-extra-vertical-space/600142#600142
+    %% and https://tex.stackexchange.com/questions/600577/adding-a-label-between-two-proofs-adds-unwanted-space
+    %% The solution is to use \\Hy@SaveLastskip and \Hy@RestoreLastskip from hyperref
+    \appendtofile{\prefixPrAtEndFiles\category.tex}{\string\makeatletter\string\Hy@SaveLastskip\string\label{proofsection:prAtEnd\pratendcountercurrent}\string\Hy@RestoreLastskip\string\makeatother\string\begin{proof}[\pratendtextproof]\string\phantomsection\string\label{proof:prAtEnd\pratendcountercurrent}\detokenize{#2}\string\end{proof}}%
   \fi%
 }{}
 
