@@ -38,25 +38,52 @@ pdflatex demo.tex && pdflatex demo.tex
 
 ### Install ###
 
-If your CTAN distribution is recent enough, you have nothing to do. Otherwise if it's not yet in your CTAN distribution, first download the `proof-at-the-end.sty` file and insert it in the root of your project with the following commands on unix (you can also clone this repository if you prefer, or just manually download or copy/paste the files on Windows). It also requires a recent version of xparse, so for simplicity we included the sty file of xparse in this repository as well:
+If your CTAN distribution is recent enough, you have nothing to do (if you are using overleaf, note that you can configure your project to use a more recent TexLive distribution: this packages is included starting from TexLive 2019). Otherwise if it's not yet in your CTAN distribution, first download the `proof-at-the-end.sty` file and insert it in the root of your project with the following commands on unix (you can also clone this repository if you prefer, or just manually download or copy/paste the files on Windows).
 
-```bash
+``` bash
 cd <your project>
 repopratend="https://raw.githubusercontent.com/leo-colisson/proof-at-the-end"
 wget ${repopratend}/master/proof-at-the-end.sty
-wget ${repopratend}/master/xparse.sty
 ```
-If you have an old distribution of LaTeX (before 2018 basically, which is the case of Overleaf), you may also need a [more recent expl3](https://tex.stackexchange.com/questions/489646/expl3-and-recent-xparse-on-overleaf-no-expl3-loader-detected/489649?noredirect=1#comment1236409_489649). It is also very easy to install, just download the zip file [http://mirrors.ctan.org/install/macros/latex/contrib/l3kernel.tds.zip](http://mirrors.ctan.org/install/macros/latex/contrib/l3kernel.tds.zip), unzip, and copy the content of the directory `tex/latex/l3kernel/` into your project. On linux it's a matter of two commands in your project:
+
+It also requires a recent version of xparse (not present in TexLive 2018 and before basically), otherwise you will get an error like:
+
+```
+Unknown argument type 'b' replaced by 'm'
+```
+
+While [we used to provide](https://raw.githubusercontent.com/leo-colisson/proof-at-the-end/c2150f4feba4709d47e43c00e5f8eb93ce345cab/xparse.sty) for simplicity a `xparse.sty` file (version `2018-04-12`) in older versions of this repository, we removed it to [avoid license issues and conflicts with recent LaTeX distributions that already include xparse](https://github.com/leo-colisson/proof-at-the-end/issues/6). Nevertheless, if you are using an older distribution, you can also download `xparse` manually [here](http://mirrors.ctan.org/install/macros/latex/contrib/l3packages.tds.zip), unzip it, and copy the `.sty` files contained in `tex/latex/l3packages/xparse/` at the root of your project. On linux, you can do that via:
+
+``` bash
+cd <your project>
+wget http://mirrors.ctan.org/install/macros/latex/contrib/l3packages.tds.zip
+unzip -d . -j l3packages.tds.zip 'tex/latex/l3packages/xparse/*'
+rm -f l3packages.tds.zip xparse.ltx
+```
+
+If you have an old distribution of LaTeX (2017 or before basically), you may also need a [more recent expl3](https://tex.stackexchange.com/questions/489646/expl3-and-recent-xparse-on-overleaf-no-expl3-loader-detected/489649?noredirect=1#comment1236409_489649) or you will get an error like:
+
+```
+Package xparse Error: Support package l3kernel too old.
+```
+
+To install it, download the zip files [http://mirrors.ctan.org/install/macros/latex/contrib/l3kernel.tds.zip](http://mirrors.ctan.org/install/macros/latex/contrib/l3kernel.tds.zip) and [http://mirrors.ctan.org/install/macros/latex/contrib/l3backend.tds.zip](http://mirrors.ctan.org/install/macros/latex/contrib/l3backend.tds.zip) (`l3backend` is [since July 1st, 2019](https://tex.stackexchange.com/questions/499082/file-l3backend-pdfmode-def-not-found-when-loading-expl3) a dependency of l3kernel), unzip, and copy the content of the directories `tex/latex/l3kernel/` (first archive) and `tex/latex/l3backend/` (second archive) into your project. On linux it's a matter of two commands in your project:
 
 ```bash
+cd <your project>
 wget http://mirrors.ctan.org/install/macros/latex/contrib/l3kernel.tds.zip
 unzip -d . -j l3kernel.tds.zip 'tex/latex/l3kernel/*'
 rm l3kernel.tds.zip
+wget http://mirrors.ctan.org/install/macros/latex/contrib/l3backend.tds.zip
+unzip -d . -j l3backend.tds.zip 'tex/latex/l3backend/*'
+rm l3backend.tds.zip
 ```
 
 If you don't want to pollute your main project with all these files, you may be interested to put them in a subfolder and update the environment variable `TEXINPUTS` or, if you use latexmk or overleaf, you can write instead a `latexmkrc` file as explained [here](https://www.overleaf.com/learn/latex/Questions/I_have_a_lot_of_.cls,_.sty,_.bst_files,_and_I_want_to_put_them_in_a_folder_to_keep_my_project_uncluttered._But_my_project_is_not_finding_them_to_compile_correctly). 
 
-That's all!
+If you still have errors, it's likely that your LaTeX distribution is just too old (LaTeX 2016 seems to be too old to install a recent l3exp). So just upgrade to a decent version, and you should not have any troubles anymore.
+
+You can test your install by compiling the `demo.tex` file present in the repository. When it compiles, you are ready to start!
 
 ### Use in your project ###
 
