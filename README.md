@@ -437,8 +437,9 @@ Sometimes, you may see something like `See proof in Equation A` instead of ``See
 ## Changelog
 
 - 2022/01/27:
-  1. Patch chapters/sections/... to better detect the current section and solve [this issue](https://github.com/leo-colisson/proof-at-the-end/issues/2). This can be disabled using the package option `disablePatchSection`.
+  1. Patch chapters/sections/... to better detect the current section and fix [issue 2](https://github.com/leo-colisson/proof-at-the-end/issues/2). This can be disabled using the package option `disablePatchSection`.
   2. Add an option `commandRef` to use other ref libraries, like `cleveref` instead of `autoref`.
+  3. Normal restatable theorem do not need to be restated. Fix [issue 8]{https://github.com/leo-colisson/proof-at-the-end/issues/8}
 
 ## Contributions ##
 

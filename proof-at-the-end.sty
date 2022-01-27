@@ -261,9 +261,13 @@
     \fi%
     %% Create a custom alias to restate the theorem
     \expandafter\protected@xdef\csname \pratendcustomrestate\endcsname{\noexpand\csname prAtEndRestate\pratendcountercurrent\endcsname}%
-    %% Restate the theorem if needed in appendix
-    \ifrestatethm
-      \appendtofile{\prefixPrAtEndFiles\category.tex}{\string\prAtEndRestate\pratendcountercurrent*}
+    %% Restate the theorem if needed in appendix.
+    %% As explained in https://github.com/leo-colisson/proof-at-the-end/issues/8
+    %% No need to restate of there is no proof at the end.
+    \ifproofend %
+      \ifrestatethm %
+        \appendtofile{\prefixPrAtEndFiles\category.tex}{\string\prAtEndRestate\pratendcountercurrent*}%
+      \fi%
     \fi%
   \fi%  
   %% If the theorem is not stated in the main text,
