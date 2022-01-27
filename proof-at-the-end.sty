@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{proof-at-the-end}[2019/05/21 A package to move proofs in appendix]
+\ProvidesPackage{proof-at-the-end}[2022/01/27 A package to move proofs in appendix]
  
 \RequirePackage{etoolbox}
 \RequirePackage{thmtools}
@@ -10,6 +10,7 @@
 % Load hyperref at the end
 \AtEndPreamble{%
   \RequirePackage{hyperref}
+  \RequirePackage{cleveref}
 }%
 \RequirePackage{kvoptions}
 
@@ -19,10 +20,11 @@
 %% \usepackage[conf={normal}]{proof-at-the-end}
 \SetupKeyvalOptions{
   family=pratendOpt,
-  prefix=pratendOpt,
+  prefix=pratendOpt, % "Namespace": Prefix of the commands, conditions....
 }
 \DeclareStringOption{conf}
 \DeclareLocalOptions{conf}% \pratendOptdefconf contains the proof
+\DeclareBoolOption{disablePatchSection} % Use \ifpratendOpt@disablePatchSection ... \else ... \fi
 \ProcessKeyvalOptions*
 
 % \DeclareOption*{\PackageWarning{proof-at-the-end}{Unknown}}
@@ -155,10 +157,10 @@
     one big link={#1~\pageref*{proof:prAtEnd\pratendcountercurrent}.}
   },
   text link section/.style={%
-      text link={See \hyperref[proof:prAtEnd\pratendcountercurrent]{proof} in \autoref{proofsection:prAtEnd\pratendcountercurrent}.}
+      text link={See \hyperref[proof:prAtEnd\pratendcountercurrent]{proof} in \pratendSectionlikeCref.}
   },
   text link section full proof/.style={%
-      text link={See \hyperref[proof:prAtEnd\pratendcountercurrent]{full proof} in \autoref{proofsection:prAtEnd\pratendcountercurrent}.}
+      text link={See \hyperref[proof:prAtEnd\pratendcountercurrent]{full proof} in \pratendSectionlikeCref.}
   },
   default text link/.style={
     text link={See \hyperref[proof:prAtEnd\pratendcountercurrent]{proof} on page~\pageref{proof:prAtEnd\pratendcountercurrent}.},
@@ -302,7 +304,9 @@
     %% https://tex.stackexchange.com/questions/600118/selectlanguage-in-the-middle-of-text-causes-extra-vertical-space/600142#600142
     %% and https://tex.stackexchange.com/questions/600577/adding-a-label-between-two-proofs-adds-unwanted-space
     %% The solution is to use \\Hy@SaveLastskip and \Hy@RestoreLastskip from hyperref
-    \appendtofile{\prefixPrAtEndFiles\category.tex}{\string\makeatletter\string\Hy@SaveLastskip\string\label{proofsection:prAtEnd\pratendcountercurrent}\string\Hy@RestoreLastskip\string\makeatother\string\begin{proof}[\pratendtextproof]\string\phantomsection\string\label{proof:prAtEnd\pratendcountercurrent}\detokenize{#2}\string\end{proof}}%
+    %% See also
+    %% https://tex.stackexchange.com/questions/553394/reliably-add-a-label-to-the-current-section-even-if-the-label-is-not-placed-rig/600847#600847
+    \appendtofile{\prefixPrAtEndFiles\category.tex}{\string\makeatletter\string\Hy@SaveLastskip\string\pratendChangeCurrentLabel\string\label{proofsection:prAtEnd\pratendcountercurrent}\string\Hy@RestoreLastskip\string\makeatother\string\begin{proof}[\pratendtextproof]\string\phantomsection\string\label{proof:prAtEnd\pratendcountercurrent}\detokenize{#2}\string\end{proof}}%
   \fi%
 }{}
 
@@ -345,5 +349,44 @@
 %   }
 % }
 
-
+%%%   Patch sections, chapters...
+% We patch the \section, \subsection and \chapter commands to make sure that
+% the text "See proof in Section XX" points to the appropriate section/subsection.
+% We basically maintain a counter counting how many time we saw a section/subsection/... and use it to label
+% directly the section afterwards.
+\newcounter{pratend@counter@sectionlike}
+%% Command to add after a label like "prAtEnd:sectionlike10". Useful to patch \section, \chapter...
+\NewDocumentCommand\pratendAddLabel{}{%
+  %% First, we get the label
+  %% Cool explaination of expandafter, edef, noexpand:
+  %%% https://www.tug.org/TUGboat/tb09-1/tb20bechtolsheim.pdf
+  \edef\pratend@current@sectionlike@label{prAtEnd:sectionlike\thepratend@counter@sectionlike}%
+  \expandafter\label{\pratend@current@sectionlike@label}%
+  \let\pratend@sectionlike@stored@label\@currentlabel%
+}%
+\NewDocumentCommand\pratendSectionlikeCref{}{%
+  \autoref{proofsection:prAtEnd\pratendcountercurrent}%
+}
+\NewDocumentCommand\pratendChangeCurrentLabel{}{
+  \ifdefined\pratend@sectionlike@stored@label%
+    \let\@currentlabel\pratend@sectionlike@stored@label%
+  \fi%
+}
+\ifpratendOptdisablePatchSection
+\else  
+  %% Add the above command to \chapter if the command exists
+  \ifdef{\@chapter}{
+    \ifpatchable*{\@chapter}{
+      \apptocmd{\@chapter}{\pratendAddLabel}{}{}%
+    }{\PackageWarning{proof-at-the-end}{Sections are not patchable.}{}}
+  }{}
+  %% patch sections/subsections/paragraph/...
+  %% https://tex.stackexchange.com/questions/631713/patch-section-command-fails/631717?noredirect=1#comment1575337_631717
+  \ifdef{\@sect}{
+    % \apptocmd{\section}{\pratendAddLabel}{}{}%
+    \ifpatchable*{\@sect}{
+      \apptocmd{\@sect}{\pratendAddLabel}{}{}%
+    }{\PackageWarning{proof-at-the-end}{Sections are not patchable.}{}}
+  }{}
+\fi
 \endinput
