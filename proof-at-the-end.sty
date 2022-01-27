@@ -10,7 +10,6 @@
 % Load hyperref at the end
 \AtEndPreamble{%
   \RequirePackage{hyperref}
-  \RequirePackage{cleveref}
 }%
 \RequirePackage{kvoptions}
 
@@ -24,7 +23,8 @@
 }
 \DeclareStringOption{conf}
 \DeclareLocalOptions{conf}% \pratendOptdefconf contains the proof
-\DeclareBoolOption{disablePatchSection} % Use \ifpratendOpt@disablePatchSection ... \else ... \fi
+\DeclareBoolOption{disablePatchSection} % Use \ifpratendOptdisablePatchSection ... \else ... \fi
+\DeclareStringOption[autoref]{commandRef} % Use commandRef=cref to use cleveref. Defaults to autoref.
 \ProcessKeyvalOptions*
 
 % \DeclareOption*{\PackageWarning{proof-at-the-end}{Unknown}}
@@ -166,10 +166,10 @@
     text link={See \hyperref[proof:prAtEnd\pratendcountercurrent]{proof} on page~\pageref{proof:prAtEnd\pratendcountercurrent}.},
   },
   text proof translated/.style={
-    text proof={#1 \string\autoref{thm:prAtEnd\pratendcountercurrent}},
+    text proof={#1 \string\pratendRef{thm:prAtEnd\pratendcountercurrent}},
   },
   default text proof/.style={
-    text proof={Proof of \string\autoref{thm:prAtEnd\pratendcountercurrent}},
+    text proof={Proof of \string\pratendRef{thm:prAtEnd\pratendcountercurrent}},
   },
   %%%% Defaults
   bare defaults/.style={
@@ -349,7 +349,9 @@
 %   }
 % }
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Patch sections, chapters...
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % We patch the \section, \subsection and \chapter commands to make sure that
 % the text "See proof in Section XX" points to the appropriate section/subsection.
 % We basically maintain a counter counting how many time we saw a section/subsection/... and use it to label
@@ -365,7 +367,7 @@
   \let\pratend@sectionlike@stored@label\@currentlabel%
 }%
 \NewDocumentCommand\pratendSectionlikeCref{}{%
-  \autoref{proofsection:prAtEnd\pratendcountercurrent}%
+  \pratendRef{proofsection:prAtEnd\pratendcountercurrent}%
 }
 \NewDocumentCommand\pratendChangeCurrentLabel{}{
   \ifdefined\pratend@sectionlike@stored@label%
@@ -378,7 +380,7 @@
   \ifdef{\@chapter}{
     \ifpatchable*{\@chapter}{
       \apptocmd{\@chapter}{\pratendAddLabel}{}{}%
-    }{\PackageWarning{proof-at-the-end}{Sections are not patchable.}{}}
+    }{\PackageWarning{proof-at-the-end}{Chapters are not patchable.}{}}
   }{}
   %% patch sections/subsections/paragraph/...
   %% https://tex.stackexchange.com/questions/631713/patch-section-command-fails/631717?noredirect=1#comment1575337_631717
@@ -389,4 +391,14 @@
     }{\PackageWarning{proof-at-the-end}{Sections are not patchable.}{}}
   }{}
 \fi
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Allow cref/autoref/...
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Instead of \autoref{proof:blabla} use \pratendRef{proof:blabla}, it allows the ref command to be customized
+%% as an option of the package.
+\NewDocumentCommand\pratendRef{m}{%
+  \csname \pratendOptcommandRef\endcsname{#1}
+}
+
 \endinput

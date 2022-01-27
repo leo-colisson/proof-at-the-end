@@ -1,6 +1,6 @@
 # Proof-at-the-end, or how to move proofs in appendix in LaTeX
 
-WARNING: this package is definitely usable, but may not be as tested and stable as standard packages. Note also that it may change a bit in the future, but we will of course try to avoid as much as possible backward incompatibilities.
+WARNING: this package is definitely usable, but may not be as tested and stable as standard packages. Note also that it may change a bit in the future, but we will of course try to avoid as much as possible backward incompatibilities. To ensure your document won't change when the package get updates, it is always safer to copy the `proof-at-the-end.sty` file at the root of your project.
 
 ## Introduction
 
@@ -146,7 +146,7 @@ Isn't it simple ?
 
 ### A note on `hyperref`
 
-An older version of the package explicitely loaded `hyperref` with no option, and an option clash could occur if the user wanted to add options to `hyperref`. We now push the loading to the very end to avoid that issue, but if you want to load packages *after* `hyperref` (like `cleverref`), it is your job to include `hyperref`, for example by putting at the end of the preambule something like:
+An older version of the package explicitely loaded `hyperref` with no option, and an option clash could occur if the user wanted to add options to `hyperref`. We now push the loading to the very end to avoid that issue, but if you want to load packages *after* `hyperref` (like `cleveref`), it is your job to include `hyperref`, for example by putting at the end of the preambule something like:
 
 ```latex
 \usepackage[colorlinks]{hyperref}
@@ -391,7 +391,7 @@ Here is the list of fundamental options supported. Most options have a `no` vers
 - `text link`: text of the link to the proof, defaults to
 
   `{See \hyperref[proof:prAtEnd\pratendcountercurrent]{proof} on page~\pageref{proof:prAtEnd\pratendcountercurrent}.}`
-- `text proof`: text displayed in place of "Proof" in the appendix. Defaults to `{Proof of \string\autoref{thm:prAtEnd\pratendcountercurrent}}`
+- `text proof`: text displayed in place of "Proof" in the appendix. Defaults to `{Proof of \string\pratendRef{thm:prAtEnd\pratendcountercurrent}}`
 - `restate command`: name of a unique macro (without backslash) that will be defined as an alias to restate the theorem wherever you want
 - `restated before`: if the theorems has been stated before (with `\theoremProofEndRestateBefore`), then we just need to put the restate command in place of the theorem, and enable this option
 - `both`/`no both`: only for `\textInAppendix`, specifies that the text must be present in both the main text and the appendix.
@@ -404,14 +404,14 @@ Here are all the alias/styles (you can create you own as well), they are practic
 - `proof at the end`: theorems whose proof need to go in the appendix contrary to `end` it does not make sure that there is a link to the proof.  Shorcut for `no proof here, no all end, proof end, no both`.
 - `debug`: make sure the proof is written in the main text as well (alias of `proof here, no opt all end`), it is quite practical to use when you write a proof to be able to use synctex features to move between the pdf and the file.
 - `no link to theorem`: Remove the link from the proof to the theorem, alias of `text proof={\proofname}`
-- `stared` (or `no number`): when you use the stared version of a theorem you don't have any number, so autoref fails to write a nice link to the theorem. This option changes the text of "Proof", by keeping the link but writting only `Proof`. Equivalent to `text proof={\string\mbox{\string\hyperref[thm:prAtEnd\pratendcountercurrent]{\proofname}}}`
+- `stared` (or `no number`): when you use the stared version of a theorem you don't have any number, so cref fails to write a nice link to the theorem. This option changes the text of "Proof", by keeping the link but writting only `Proof`. Equivalent to `text proof={\string\mbox{\string\hyperref[thm:prAtEnd\pratendcountercurrent]{\proofname}}}`
 - `see full proof`: useful when you want to write in the main text only a sketch of proof, this alias writes a link `See full proof on page X.`. Equivalent to `text link={See \hyperref[proof:prAtEnd\pratendcountercurrent]{full proof} on page~\pageref{proof:prAtEnd\pratendcountercurrent}.}`
 - `one big link`: instead of two links, one for page, one for proof, put just one link around everything. It can also accept an optional argument which will be the text of the link, like `one big link=Go to the proof`. The default value is `See proof on page~\pageref*{proof:prAtEnd\pratendcountercurrent.}`.
 - `one big link translated`: This is like `one big link`, but automatically add the page at the end (and a big link around). Practical to quickly define a translation like `one big link translated=Voir preuve page`. See also `text proof translated`.
-- `text link section`: Put a link to the proof looking like "See proof in section X". Defaults to `text link={See \hyperref[proof:prAtEnd\pratendcountercurrent]{proof} in \autoref{proofsection:prAtEnd\pratendcountercurrent}.}`
-- `text link section full proof`: Put a link to the proof looking like "See full proof in section X". Defaults to `text link={See \hyperref[proof:prAtEnd\pratendcountercurrent]{full proof} in \autoref{proofsection:prAtEnd\pratendcountercurrent}.}`
+- `text link section`: Put a link to the proof looking like "See proof in section X". Defaults to `text link={See \hyperref[proof:prAtEnd\pratendcountercurrent]{proof} in \pratendSectionlikeCref.}`
+- `text link section full proof`: Put a link to the proof looking like "See full proof in section X". Defaults to `text link={See \hyperref[proof:prAtEnd\pratendcountercurrent]{full proof} in \pratendSectionlikeCref.}`
 - `default text link`: default text for the link to the proof, equivalent of `text link={See \hyperref[proof:prAtEnd\pratendcountercurrent]{proof} on page~\pageref{proof:prAtEnd\pratendcountercurrent}.}`
-- `default text proof`: default text for the proof in appendix, equivalent of `text proof={Proof of \string\autoref{thm:prAtEnd\pratendcountercurrent}}`
+- `default text proof`: default text for the proof in appendix, equivalent of `text proof={Proof of \string\pratendRef{thm:prAtEnd\pratendcountercurrent}}`
 - `text proof translated`: like `default text proof`, but takes one argument and use it instead of `Proof of`. Example: `text proof translated={Preuve du}`
 - `bare defaults`: default style that is loaded before anything else that configure by default a link to the proof, put the proof in appendix, use the category `defaultcategory`. It is an alias of `end, link to proof, no restate,category=defaultcategory, default text link,default text proof,restate command=pratenddummymacro`.
 - `configuration options`: style that contains the options used to load the package. It is called right after `bare defaults`. Note that you cannot insert macro in the options, overwrite `global custom defaults` instead
@@ -419,6 +419,26 @@ Here are all the alias/styles (you can create you own as well), they are practic
 - `local custom defaults`: empty style that you can overwrite to change the "local" defaults, like category
 - `all defaults`: all the defaults, equivalent of `bare defaults, configuration options, global custom defaults, local custom defaults`
 
+## Package options
+
+The package comes with multiple options:
+- The `conf={CONFIGURATION}` option is used to configure the default style. Usage: `\usepackage[conf={normal, text link section}]{proof-at-the-end}`
+- The `disablePatchSection` is useful to stop the library from patching the section-like commands and chapters (by default, we automatically add a `\label` at the end of the section which is used by `text link section` to find the Appendix). If you enable this option, you can manually add the label by using `\pratendAddLabel` after the appendix section (without any argument).
+- `commandRef=NAMECOMMAND`: By default, theorem are referenced to using `\autoref{}`. You can change the value of `NAMECOMMAND` to use another command, like `commandRef=Cref` to use `\Cref{}`. In that case, make sure to load both `hyperref` and `cleveref` (typically at the very end of your preambule) as `cleveref` needs to be loaded after `hyperref`. Internally, the library creates and uses `\pratendRef` instead of `\autoref`.
+
+## Troubleshooting
+
+Here are some common issues you may have, with explainations to solve them.
+
+### The link after the proof does not mention the section, but something else (an equation, a figure, etc.)
+
+Sometimes, you may see something like `See proof in Equation A` instead of ``See proof in Appendix A`. This issue [was reported before](https://github.com/leo-colisson/proof-at-the-end/issues/2) and should be solved on newer versions (starting from 2022/01/27) by automatically patching sections. If you have this issue, just upgrade (for instance by copying the [`proof-at-the-end.sty` file](https://github.com/leo-colisson/proof-at-the-end) at the root of your project). We proceed by patching the `\chapter`, `\section`, `\subsection`, `subsubsection` and `\paragraph` commands to add `\pratendAddLabel` which will help the package to find the label of the current section. If you prefer the old behavior, you can disable it using the `disablePatchSection` option (more details in the package options).
+
+## Changelog
+
+- 2022/01/27:
+  1. Patch chapters/sections/... to better detect the current section and solve [this issue](https://github.com/leo-colisson/proof-at-the-end/issues/2). This can be disabled using the package option `disablePatchSection`.
+  2. Add an option `commandRef` to use other ref libraries, like `cleveref` instead of `autoref`.
 
 ## Contributions ##
 
