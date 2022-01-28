@@ -1,6 +1,8 @@
 \documentclass{article}
 
 \usepackage{amssymb, amsthm, amsmath}
+\usepackage{xparse}
+\usepackage{verbatim}
 
 % Load the package (put the proof-at-the-end.sty file in the working directory)
 \usepackage{proof-at-the-end} % with default options...
@@ -17,7 +19,7 @@
 %     text link={\hyperref[proof:prAtEnd\pratendcountercurrent]{See proof on page~\pageref*{proof:prAtEnd\pratendcountercurrent}}}
 %   }
 % }
-%%% You can also easily modify the gloabl/locals defaults in other parts of the code using:
+%%% You can also easily modify the global/locals defaults in other parts of the code using:
 % \pgfkeys{/prAtEnd/local custom defaults/.style={
 %     category=greattheorem
 %   }
@@ -39,13 +41,15 @@
 \providecommand*\lemmaautorefname{Lemma}
 
 %% If you want you can define shortcuts:
-\usepackage{xparse}
-% And to define new shortcuts:
-\NewDocumentEnvironment{mynormalthm}{O{}O{}+b}{%
-  \begin{theoremEnd}[normal,#2]{thm}[#1]%
-    #3%
-  \end{theoremEnd}%
-}{}
+% And to define new shortcuts, in order to avoid typing:
+% \NewDocumentEnvironment{thmE}{O{}O{}+b}{%
+%   \begin{theoremEnd}[normal,#2]{thm}[#1]%
+%     #3%
+%   \end{theoremEnd}%
+% }{}
+% you can just type:
+\newEndThm[normal]{thmE}{thm}
+\newEndProof{proofE}
 
 \usepackage{hyperref}
 \begin{document}
@@ -69,7 +73,7 @@ And I can refer to my theorems using classic labels, like in \autoref{thm:ilikel
   It is possible to change the link.
 \end{theoremEnd}
 \begin{proofEnd}
-  Here I'm using ``text link section''. See, I can also use any chars here, including \#.
+  Here I'm using ``text link section''.
 \end{proofEnd}
 
 \begin{theoremEnd}[category=greattheorem, end]{thm}[Different categories]
@@ -176,33 +180,67 @@ And of course it is easy to define custom shortcuts, using in prelude:
 }{}
 \end{verbatim}
 
-\begin{mynormalthm}[My own environment]
-  You can then create your own environment from other styles using
-\end{mynormalthm}
+\newsavebox{\myEndBox}
+
+\begin{lrbox}{\myEndBox}
+  \begin{minipage}{1.0\linewidth}
+\begin{verbatim}
+\newEndThm[normal]{thmE}{thm}
+\newEndProof{proofE}
+\end{verbatim}
+  \end{minipage}
+\end{lrbox}
+
+\newsavebox{\myEndBoxB}
+
+\begin{lrbox}{\myEndBoxB}
+  \begin{minipage}{1.0\linewidth}
+\begin{verbatim}
+\begin{thmE}[Title][optional options]
+  Theorem
+\end{thmE}
+\begin{proofE}
+  Your proof
+\end{proofE}
+\end{verbatim}
+  \end{minipage}
+\end{lrbox}
+   
+\begin{thmE}[My own environment][normal]
+  You can then create a wrapper to avoid typing the full theoremEnd environment, and to add custom options by using:
+  
+  \begin{center}
+    \usebox{\myEndBox}
+  \end{center}
+  
+  \noindent (see that we need to use \texttt{\textbackslash textt} or \texttt{lrbox} to typeset verbatim inside theorem)
+
+  Then, you can simply use:
+\end{thmE}
 \begin{proofEnd}
   That's quicker :D
 \end{proofEnd}
 
-\begin{mynormalthm}[My own environment][end]
+\begin{thmE}[My own environment][end]
   You can use options also with your custom environments.
-\end{mynormalthm}
+\end{thmE}
 \begin{proofEnd}
   That's quicker with the proof at the end :D
 \end{proofEnd}
 
-\begin{mynormalthm}[][end]
+\begin{thmE}[][end]
   And you can remove the title and have options.
-\end{mynormalthm}
-\begin{proofEnd}
+\end{thmE}
+\begin{proofE}
   Just leave empty title.
-\end{proofEnd}
+\end{proofE}
 
-\begin{mynormalthm}[My second own environment][all end]
+\begin{thmE}[My second own environment][all end]
   My normal theorem is moved at the end!
-\end{mynormalthm}
-\begin{proofEnd}
+\end{thmE}
+\begin{proofE}
   Custom environments are practical no ;)
-\end{proofEnd}
+\end{proofE}
 
 \begin{theoremEnd}[]{thm}[Yes I can have no proof]
   Proof is useless. You can do do it. And see, I can include other environments inside me ;)\\
@@ -211,7 +249,6 @@ And of course it is easy to define custom shortcuts, using in prelude:
     C & D \\ 
   \end{tabular}
 \end{theoremEnd}
-
 
 \begin{theoremEnd}[restate command=mymanualrestate]{thm}[Manual restate]
   A theorem can be manually restated  

@@ -1,0 +1,37 @@
+\documentclass{article}
+
+\usepackage{xparse} % Not needed with recent LaTeX
+\usepackage{amsthm}
+
+% Create new theorems, or use ntheorem/thmtools/...
+\newtheorem{thm}{Theorem}[section]
+% Default uses autoref, but you can also use cleveref, see the documentation.
+% Say to autoref that "thm" are Theorems.
+\newcommand{\thmautorefname}{Theorem}
+
+%% Load the library. createShortEnv automatically creates the shortcuts
+%% thmE, theoremE, lemmaE, corrolaryE, proofE. See \newEndThm for more details.
+\usepackage[createShortEnv]{proof-at-the-end}
+
+\begin{document}
+
+\section{Theorems}
+
+\begin{thmE}[My title]
+  I am a theorem whose proof stays here
+\end{thmE}
+\begin{proofE}
+  See, you can see me.
+\end{proofE}
+
+\begin{thmE}[My title][end, restate]
+  I am a restated theorem whose proof goes in appendix (compile me twice).
+\end{thmE}
+\begin{proofE}
+  And I am a proof.
+\end{proofE}
+
+\section{Proofs}
+\printProofs
+
+\end{document}

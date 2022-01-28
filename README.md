@@ -36,6 +36,60 @@ pdflatex demo.tex && pdflatex demo.tex
 
 ## Quickstart ##
 
+### Super Quick QuickStart ###
+
+If `proof-at-the-end` it's not installed in your CTAN distribution, copy the [`proof-at-the-end.sty` file](github.com/leo-colisson/proof-at-the-end/) in your project. Then, in your project, create new theorem/lemma environments (using any tool you like, like asmthm, ntheorem and thmtools), load the library using `\usepackage[createShortEnv]{proof-at-the-end}` and write your theorem using:
+
+```latex
+\begin{thmE}[My title][end, restate]
+  I am a restated theorem whose proof goes in appendix (compile me twice).
+\end{thmE}
+\begin{proofE}
+  And I am a proof.
+\end{proofE}
+```
+The options (here `restate` and `end`) tells what should go in appendix, how to configure the links... Here the proof should go in appendix, and the `restate` options states that the theorem should be restated before the proof.
+
+You can find below a full example to compile which should produce this output (sorry, this is a screenshot):
+
+![Screenshot](screenshot.png)
+
+You can directly copy them (with a more complete demo) in the github page here \url{https://github.com/leo-colisson/proof-at-the-end/}.
+
+```latex
+\documentclass{article}
+
+\usepackage{xparse} % Not needed with recent LaTeX
+\usepackage{amsthm}
+
+% Create new theorems, or use ntheorem/thmtools/...
+\newtheorem{thm}{Theorem}[section]
+% Default uses autoref, but you can also use cleveref, see the documentation.
+% Say to autoref that "thm" are Theorems.
+\newcommand{\thmautorefname}{Theorem}
+
+%% Load the library. createShortEnv automatically creates the shortcuts
+%% thmE, theoremE, lemmaE, corrolaryE, proofE. See \newEndThm for more details.
+\usepackage[createShortEnv]{proof-at-the-end}
+
+\begin{document}
+
+\section{Theorems}
+
+\begin{thmE}[My title][end]
+  I am a theorem
+\end{thmE}
+\begin{proofE}
+  And I am a proof.
+\end{proofE}
+
+\section{Proofs}
+\printProofs
+
+\end{document}
+```
+
+
 ### Install ###
 
 If your CTAN distribution is recent enough, you have nothing to do (if you are using overleaf, note that you can configure your project to use a more recent TexLive distribution: this packages is included starting from TexLive 2019). Otherwise if it's not yet in your CTAN distribution, first download the `proof-at-the-end.sty` file and insert it in the root of your project with the following commands on unix (you can also clone this repository if you prefer, or just manually download or copy/paste the files on Windows).
@@ -216,22 +270,16 @@ and for local configuration:
 }
 ```
 
-Finally, it can be practical to define custom environments to avoid typing always `theoremEnd`:
+Finally, it can be practical to define custom environments to avoid typing always `theoremEnd` using something like that (`thmE` is the shortcut environment to create, and `thm` is the old one):
 
 ```latex
-\NewDocumentEnvironment{thmE}{O{}O{}+b}{%
-  \begin{theoremEnd}[normal,#2]{thm}[#1]%
-    #3%
-  \end{theoremEnd}%
-}{}
-% Do not forget the second parameter or you might get Missing \begin{document} error
-\NewDocumentEnvironment{proofE}{O{}+b}{%
-  \begin{proofEnd}[#1]%
-    #2%
-  \end{proofEnd}%
-}{}
+\newEndThm[normal]{thmE}{thm}
+\newEndProof{proofE}
 ```
-That you could use like that:
+
+By default, loading the package using the `createShortEnv` option automatically creates the shortcut environments `proofE` (to replace `proof`), `thmE` (to replace `thm`), `theoremE` (to replace... ok you got the pattern), `lemmaE` and `corollaryE`.
+
+Then you can use like that:
 
 ```latex
 \begin{thmE}[Title]
@@ -425,6 +473,7 @@ The package comes with multiple options:
 - The `conf={CONFIGURATION}` option is used to configure the default style. Usage: `\usepackage[conf={normal, text link section}]{proof-at-the-end}`
 - The `disablePatchSection` is useful to stop the library from patching the section-like commands and chapters (by default, we automatically add a `\label` at the end of the section which is used by `text link section` to find the Appendix). If you enable this option, you can manually add the label by using `\pratendAddLabel` after the appendix section (without any argument).
 - `commandRef=NAMECOMMAND`: By default, theorem are referenced to using `\autoref{}`. You can change the value of `NAMECOMMAND` to use another command, like `commandRef=Cref` to use `\Cref{}`. In that case, make sure to load both `hyperref` and `cleveref` (typically at the very end of your preambule) as `cleveref` needs to be loaded after `hyperref`. Internally, the library creates and uses `\pratendRef` instead of `\autoref`.
+- `createShortEnv`: creates (using `newEndThm` and `newEndProof`) the shortcut environments `proofE` (to replace `proof`), `thmE` (to replace `thm`), `theoremE` (to replace... ok you got the pattern), `lemmaE` and `corollaryE`. Note that it is still your job to define the `thm`, `lemma` environments.
 
 ## Troubleshooting
 
@@ -434,12 +483,46 @@ Here are some common issues you may have, with explainations to solve them.
 
 Sometimes, you may see something like `See proof in Equation A` instead of ``See proof in Appendix A`. This issue [was reported before](https://github.com/leo-colisson/proof-at-the-end/issues/2) and should be solved on newer versions (starting from 2022/01/27) by automatically patching sections. If you have this issue, just upgrade (for instance by copying the [`proof-at-the-end.sty` file](https://github.com/leo-colisson/proof-at-the-end) at the root of your project). We proceed by patching the `\chapter`, `\section`, `\subsection`, `subsubsection` and `\paragraph` commands to add `\pratendAddLabel` which will help the package to find the label of the current section. If you prefer the old behavior, you can disable it using the `disablePatchSection` option (more details in the package options).
 
+### I get an error `ERROR: File ended while scanning use of \@xverbatim.` when using verbatim inside a theorem
+
+I turns out that this library needs to use the `+b` option of environments in order to manipulate appropriately the theorem/proof. Unfortunately, it means that it is not possible to use verbatim environments inside. While [this answer](https://tex.stackexchange.com/questions/489435/use-environment-into-new-xparse-environment) suggests that it is impossible to avoid this issue, other people reported that it may be possible to use catcodes to capture the environment body verbatim, before using scantokens to reparse it, or to use [filecontentsdef](https://mirror.ibcp.fr/pub/CTAN/macros/latex/contrib/filecontentsdef/filecontentsdef.pdf) (see for instance [this comment](https://tex.stackexchange.com/questions/631810/create-a-newdocumentenvironment-programmatically?noredirect=1#comment1575605_631810)],  ). However, it may be possible that this make syntex unusable, so it may not worth the effort.
+
+In anycase, there exists some workarounds, some of the are for instance give in the [TeX FAQ](https://texfaq.org/FAQ-verbwithin). The simplest solution, if your code is simple/short enough, is to use `\texttt` (you can replace backslash with `\textbackslash` inside etc, and include it in a `verse` if you have multiple lines). If you have a longer text, you may also like `lrbox` to put your content inside a box, for instance like that:
+
+
+```latex
+%% Create the box
+\newsavebox{\myEndBox}
+
+\begin{lrbox}{\myEndBox}
+  \begin{minipage}{1.0\linewidth}
+\begin{verbatim}
+\newEndThm[normal]{thmE}{thm}
+\newEndProof{proofE}{proof}
+\end{verbatim}
+  \end{minipage}
+\end{lrbox}
+
+%% Create a theorem:
+\begin{thmE}
+  Insert the box:
+  
+  \begin{center}
+    \usebox{\myEndBox}
+  \end{center}
+
+```
+
+
 ## Changelog
 
 - 2022/01/27:
+  1. Fix the issue when using sharps in a proof https://github.com/leo-colisson/proof-at-the-end/issues/7.
+  2. Provide `\newEndThm`, `\newEndProof` and the option `createShortEnv` to quickly create environments.
+- 2022/01/27:
   1. Patch chapters/sections/... to better detect the current section and fix [issue 2](https://github.com/leo-colisson/proof-at-the-end/issues/2). This can be disabled using the package option `disablePatchSection`.
   2. Add an option `commandRef` to use other ref libraries, like `cleveref` instead of `autoref`.
-  3. Normal restatable theorem do not need to be restated. Fix [issue 8]{https://github.com/leo-colisson/proof-at-the-end/issues/8}
+  3. Normal restatable theorem do not need to be restated. Fix [issue 8](https://github.com/leo-colisson/proof-at-the-end/issues/8).
 
 ## Contributions ##
 

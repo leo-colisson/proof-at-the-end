@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{proof-at-the-end}[2022/01/27 A package to move proofs in appendix]
+\ProvidesPackage{proof-at-the-end}[2022/01/28 A package to move proofs in appendix]
  
 \RequirePackage{etoolbox}
 \RequirePackage{thmtools}
@@ -25,6 +25,7 @@
 \DeclareLocalOptions{conf}% \pratendOptdefconf contains the proof
 \DeclareBoolOption{disablePatchSection} % Use \ifpratendOptdisablePatchSection ... \else ... \fi
 \DeclareStringOption[autoref]{commandRef} % Use commandRef=cref to use cleveref. Defaults to autoref.
+\DeclareBoolOption{createShortEnv} % To create thmE, theoremE, proofE, lemmaE, corrolaryE
 \ProcessKeyvalOptions*
 
 % \DeclareOption*{\PackageWarning{proof-at-the-end}{Unknown}}
@@ -430,5 +431,60 @@
 \NewDocumentCommand\pratendRef{m}{%
   \csname \pratendOptcommandRef\endcsname{#1}
 }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Create automatically wrapper
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Defines a shortcut to avoid typing the whole theoremEnd environment.
+%% Avoid to manually type \NewDocumentEnvironment...
+%% Usage: \newEndThm[default options]{new environment}{old environment}
+% E.g.: \newEndThm[normal]{thmE}{thm}{}
+\NewDocumentCommand{\newEndThm}{O{}mm}{%
+  % \expandafter\NewDocumentEnvironment{#2}{O{}O{}+b}{%
+    % \begin{theoremEnd}[#1,##2]{#3}[##1]%
+      % ##3%
+    % \end{theoremEnd}%
+  % }{}
+  \NewDocumentEnvironment{#2}{O{}O{}}{%
+    \begin{theoremEnd}[#1,##2]{#3}[##1]%
+    }{\end{theoremEnd}}
+}
+
+% \NewDocumentCommand{\newEndThm}{O{}mm}{%
+%   % \expandafter\NewDocumentEnvironment{#2}{O{}O{}+b}{%
+%     % \begin{theoremEnd}[#1,##2]{#3}[##1]%
+%       % ##3%
+%     % \end{theoremEnd}%
+%   % }{}
+%   \expandafter\NewDocumentEnvironment{#2}{O{}O{}+b}{%
+%     \begin{theoremEnd}[#1,##2]{#3}[##1]%
+%       ##3
+%     \end{theoremEnd}%
+%   }{}
+% }
+
+%% Avoid to manually type \NewDocumentEnvironment...
+%% Usage: \newEndProof[default options]{new proof environment}{old proof environment}
+% E.g.: \newEndProof[]{proofE}{proof}
+\NewDocumentCommand{\newEndProof}{O{}m}{%
+  \NewDocumentEnvironment{#2}{O{}+b}{%
+    \begin{proofEnd}[#1,##1]%
+      ##2%
+    \end{proofEnd}%
+  }{}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Create even more automatically wrapper with option "createShortEnv"
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\ifpratendOptcreateShortEnv
+  %%% We create automatically the environments.
+  \newEndProof{proofE}
+  \newEndThm{thmE}{thm}
+  \newEndThm{lemmaE}{lemmaE}
+  \newEndThm{theoremE}{theorem}
+  \newEndThm{corollaryE}{corollary}
+\fi
 
 \endinput
