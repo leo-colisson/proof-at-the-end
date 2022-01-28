@@ -33,6 +33,7 @@ package: doc demo
 	cp buildpratend/proof-at-the-end.pdf buildpratend/proof-at-the-end/
 	cd buildpratend/proof-at-the-end/ && makedtx -author "Léo Colisson" -dir $(SRC_DIR) -src "proof-at-the-end\.sty=>proof-at-the-end.sty" -doc ../doc/proof-at-the-end_doc.tex proof-at-the-end
 	cp demo.pdf buildpratend/proof-at-the-end/proof-at-the-end_demo.pdf
+	cp demo.tex buildpratend/proof-at-the-end/proof-at-the-end_demo.tex
 	cd buildpratend/ && tar -zcvf proof-at-the-end.tar.gz proof-at-the-end/
 	@echo "Package built in buildpratend/proof-at-the-end.tar.gz"
 	@echo "################ /!\ Make sure to update the version in proof-at-the-end.sty"
