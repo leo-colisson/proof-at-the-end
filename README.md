@@ -38,7 +38,7 @@ pdflatex demo.tex && pdflatex demo.tex
 
 ### Super Quick QuickStart ###
 
-If `proof-at-the-end` it's not installed in your CTAN distribution, copy the [`proof-at-the-end.sty` file](github.com/leo-colisson/proof-at-the-end/) in your project. Then, in your project, create new theorem/lemma environments (using any tool you like, like asmthm, ntheorem and thmtools), load the library using `\usepackage[createShortEnv]{proof-at-the-end}` and write your theorem using:
+If `proof-at-the-end` it's not installed in your CTAN distribution, copy the [`proof-at-the-end.sty` file](https://github.com/leo-colisson/proof-at-the-end/) in your project. Then, in your project, create new theorem/lemma environments (using any tool you like, like asmthm, ntheorem and thmtools), load the library using `\usepackage[createShortEnv]{proof-at-the-end}` (note that you need the version 2022/01/28 to have `createShortEnv` defined, otherwise you need to use directly `theoremEnd`) and write your theorem using:
 
 ```latex
 \begin{thmE}[My title][end, restate]
@@ -54,7 +54,7 @@ You can find below a full example to compile which should produce this output (s
 
 ![Screenshot](screenshot.png)
 
-You can directly copy them (with a more complete demo) in the github page here \url{https://github.com/leo-colisson/proof-at-the-end/}.
+You can directly copy them (with a more complete demo) in the github page here https://github.com/leo-colisson/proof-at-the-end/.
 
 ```latex
 \documentclass{article}
