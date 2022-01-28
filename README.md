@@ -50,9 +50,9 @@ If `proof-at-the-end` it's not installed in your CTAN distribution, copy the [`p
 ```
 The options (here `restate` and `end`) tells what should go in appendix, how to configure the links... Here the proof should go in appendix, and the `restate` options states that the theorem should be restated before the proof.
 
-You can find below a full example to compile which should produce this output (sorry, this is a screenshot):
+You can find below a full example to compile which should produce this output (sorry, this is a screenshot, that way I can export it easily in the github page). Just make sure to compile twice to get references.
 
-![Screenshot](screenshot.png)
+![Screenshot of the quickstart](screenshot.png)
 
 You can directly copy them (with a more complete demo) in the github page here https://github.com/leo-colisson/proof-at-the-end/.
 
@@ -184,7 +184,18 @@ For example:
 \end{proofEnd}
 ```
 
-And put in the place where you would like to display the theorem the following code:
+Since `theoremEnd` may be a bit verbose to use, we provide since the version 2022/01/28, an option: if you load the program using `\usepackage[createShortEnv]{proof-at-the-end}`, you will automatically have the shortcut environments `proofE` (to replace `proof`), `thmE` (to replace `thm`), `theoremE` (to replace... ok you got the pattern), `lemmaE` and `corollaryE`. Note that it is your role to define the initial commands `thm`..., but you don't need to define them all, only those that you use. Then, you can use them like:
+
+```latex
+\begin{thmE}[My title][end, restate]
+  I am a restated theorem whose proof goes in appendix (compile me twice).
+\end{thmE}
+\begin{proofE}
+  And I am a proof.
+\end{proofE}
+```
+
+Finally, to display the proofs, just use `\printProofs` where you like:
 
 ```latex
 \printProofs
@@ -510,13 +521,13 @@ In anycase, there exists some workarounds, some of the are for instance give in 
   \begin{center}
     \usebox{\myEndBox}
   \end{center}
-
+\end{thmE}
 ```
 
 
 ## Changelog
 
-- 2022/01/27:
+- 2022/01/28:
   1. Fix the issue when using sharps in a proof https://github.com/leo-colisson/proof-at-the-end/issues/7.
   2. Provide `\newEndThm`, `\newEndProof` and the option `createShortEnv` to quickly create environments.
 - 2022/01/27:

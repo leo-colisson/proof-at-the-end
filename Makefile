@@ -6,6 +6,10 @@ SRC_DIR:=$(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 demo:
 	pdflatex demo.tex && pdflatex demo.tex
 
+quickstart:
+	pdflatex quickstart.tex && pdflatex quickstart.tex
+
+
 clean:
 	rm -rf buildpratend/
 	latexmk -C
@@ -17,6 +21,7 @@ doc:
 	rm -rf buildpratend/doc/
 	mkdir -p buildpratend/doc/
 	pandoc README.md author.yaml --lua-filter=promote-headers.lua --number-sections -f markdown --toc -t latex -s -o buildpratend/doc/proof-at-the-end_doc.tex
+	cp screenshot.png buildpratend/doc/
 	cd buildpratend/doc/ && pdflatex proof-at-the-end_doc.tex && pdflatex proof-at-the-end_doc.tex && cp proof-at-the-end_doc.pdf ../proof-at-the-end.pdf
 	@echo "Documentation built in buildpratend/proof-at-the-end.pdf"
 
