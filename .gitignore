@@ -5,6 +5,10 @@ buildpratend/**
 *.out
 *.synctex.gz
 *.pdf
+*.toc
+*.fls
+*.fdb_latexmk
+debug*
 pratenddefaultcategory.tex
 pratendgreattheorem.tex
 debug.tex

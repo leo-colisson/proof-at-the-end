@@ -30,18 +30,44 @@
 % \DeclareOption*{\PackageWarning{proof-at-the-end}{Unknown}}
 % \ProcessOptions\relax
 
+%% https://tex.stackexchange.com/a/13289/116348
 \newwrite\appendwrite
+\newcount\pratend@count@makeallother
 
+%%% Loop to make sure all chars are normal letters, including #.
+\newcommand{\makeallother}{%
+  \pratend@count@makeallother0\relax
+  \loop\ifnum\pratend@count@makeallother<255\relax
+  \catcode\pratend@count@makeallother12\relax
+  \advance\pratend@count@makeallother by 1\relax
+  \repeat
+}
+
+%%% This command allows the user to append things to a file. But the content may contain macros that
+%%% will be evaluated before writing them to the file.
+%%% TODO: Efficiency may be improved by writing to the file only before the printProof.
 % The first argument is the file name
 % The second argument is the text to write
 \NewDocumentCommand\appendtofile{m+m}{%
   \begingroup
-  \IfFileExists{#1}%
-  {\CatchFileDef{\filecontent}{#1}{\catcode`\\=12 \endlinechar=`^^J\catcode\endlinechar=12\relax}}% keep existing end-of-lines
-  {\let\filecontent\empty}%
-  \immediate\openout\appendwrite=#1\relax
-  \immediate\write\appendwrite{\detokenize\expandafter{\filecontent}#2}%
-  \immediate\closeout\appendwrite
+  %% Read the content
+  \begingroup%
+  \IfFileExists{#1}{%
+    \newlinechar\endlinechar%
+    \makeallother% Turn all chars into normal letters.
+    \everyeof{\noexpand}%
+    \edef\fileContent{\@@input #1 }%
+  }{%
+    \let\fileContent\empty
+  }%
+  %% Open the file to write in it:
+  \immediate\openout\appendwrite #1\relax%
+  %% Write the text
+  \immediate\write\appendwrite{\fileContent}%
+  \endgroup%
+  \immediate\write\appendwrite{#2}%
+  %% Close the file
+  \immediate\closeout\appendwrite%
   \endgroup
 }
 
