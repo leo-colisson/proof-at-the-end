@@ -69,7 +69,7 @@ You can directly copy them (with a more complete demo) in the github page here h
 \newcommand{\thmautorefname}{Theorem}
 
 %% Load the library. createShortEnv automatically creates the shortcuts
-%% thmE, theoremE, lemmaE, corrolaryE, proofE. See \newEndThm for more details.
+%% thmE, theoremE, lemmaE, propositionE, corollaryE, proofE. See \newEndThm for more details.
 \usepackage[createShortEnv]{proof-at-the-end}
 
 \begin{document}
@@ -184,7 +184,7 @@ For example:
 \end{proofEnd}
 ```
 
-Since `theoremEnd` may be a bit verbose to use, we provide since the version 2022/01/28, an option: if you load the program using `\usepackage[createShortEnv]{proof-at-the-end}`, you will automatically have the shortcut environments `proofE` (to replace `proof`), `thmE` (to replace `thm`), `theoremE` (to replace... ok you got the pattern), `lemmaE` and `corollaryE`. Note that it is your role to define the initial commands `thm`..., but you don't need to define them all, only those that you use. Then, you can use them like:
+Since `theoremEnd` may be a bit verbose to use, we provide since the version 2022/01/28, an option: if you load the program using `\usepackage[createShortEnv]{proof-at-the-end}`, you will automatically have the shortcut environments `proofE` (to replace `proof`), `thmE` (to replace `thm`), `theoremE` (to replace... ok you got the pattern), `lemmaE`, `propositionE` and `corollaryE`. Note that it is your role to define the initial commands `thm`..., but you don't need to define them all, only those that you use. Then, you can use them like:
 
 ```latex
 \begin{thmE}[My title][end, restate]
@@ -527,6 +527,9 @@ In anycase, there exists some workarounds, some of the are for instance give in 
 
 ## Changelog
 
+- 2022/02/01:
+  1. Fix a typo when defining the shortcut for lemma
+  2. Add a shortcut for proposition
 - 2022/01/28:
   1. Fix the issue when using sharps in a proof https://github.com/leo-colisson/proof-at-the-end/issues/7.
   2. Provide `\newEndThm`, `\newEndProof` and the option `createShortEnv` to quickly create environments.
