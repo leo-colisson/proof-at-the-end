@@ -400,13 +400,13 @@
 \NewDocumentCommand\pratendSectionlikeCref{}{%
   \pratendRef{proofsection:prAtEnd\pratendcountercurrent}%
 }
-\NewDocumentCommand\pratendChangeCurrentLabel{}{
+\NewDocumentCommand\pratendChangeCurrentLabel{}{%
   \ifdefined\pratend@sectionlike@stored@label%
     \let\@currentlabel\pratend@sectionlike@stored@label%
   \fi%
 }
-\ifpratendOptdisablePatchSection
-\else  
+\ifpratendOptdisablePatchSection%
+\else  %
   %% Add the above command to \chapter if the command exists
   \ifdef{\@chapter}{
     \ifpatchable*{\@chapter}{
@@ -429,7 +429,7 @@
 %% Instead of \autoref{proof:blabla} use \pratendRef{proof:blabla}, it allows the ref command to be customized
 %% as an option of the package.
 \NewDocumentCommand\pratendRef{m}{%
-  \csname \pratendOptcommandRef\endcsname{#1}
+  \csname \pratendOptcommandRef\endcsname{#1}%
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -448,7 +448,7 @@
   % }{}
   \NewDocumentEnvironment{#2}{O{}O{}}{%
     \begin{theoremEnd}[#1,##2]{#3}[##1]%
-    }{\end{theoremEnd}}
+    }{\end{theoremEnd}}%
 }
 
 % \NewDocumentCommand{\newEndThm}{O{}mm}{%
@@ -472,7 +472,7 @@
     \begin{proofEnd}[#1,##1]%
       ##2%
     \end{proofEnd}%
-  }{}
+  }{}%
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -10,22 +10,16 @@
 \newcommand{\thmautorefname}{Theorem}
 
 %% Load the library. createShortEnv automatically creates the shortcuts
-%% thmE, theoremE, lemmaE, corrolaryE, proofE. See \newEndThm for more details.
+%% thmE, theoremE, lemmaE, propositionE, corollaryE, proofE. See \newEndThm for more details.
 \usepackage[createShortEnv]{proof-at-the-end}
 
 \begin{document}
 
 \section{Theorems}
 
-\begin{thmE}[My title]
-  I am a theorem whose proof stays here
-\end{thmE}
-\begin{proofE}
-  See, you can see me.
-\end{proofE}
-
+%% If you don't have any title, leave an empty bracket like \begin{thmE}[][end]
 \begin{thmE}[My title][end, restate]
-  I am a restated theorem whose proof goes in appendix (compile me twice).
+  I am a theorem
 \end{thmE}
 \begin{proofE}
   And I am a proof.

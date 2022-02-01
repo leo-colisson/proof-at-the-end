@@ -48,7 +48,7 @@ If `proof-at-the-end` it's not installed in your CTAN distribution, copy the [`p
   And I am a proof.
 \end{proofE}
 ```
-The options (here `restate` and `end`) tells what should go in appendix, how to configure the links... Here the proof should go in appendix, and the `restate` options states that the theorem should be restated before the proof.
+The options (here `restate` and `end`) tells what should go in appendix, how to configure the links... Here the proof should go in appendix, and the `restate` options states that the theorem should be restated before the proof. Note that in case you don't want any title but do want to add options, make sure to insert an empty pair of brackets like in `\begin{thmE}[][end, text link=]` (the option `text link` is used to choose the text of the link to the proof, writting `text link=` is used to display no link at all).
 
 You can find below a full example to compile which should produce this output (sorry, this is a screenshot, that way I can export it easily in the github page). Just make sure to compile twice to get references.
 
@@ -76,7 +76,8 @@ You can directly copy them (with a more complete demo) in the github page here h
 
 \section{Theorems}
 
-\begin{thmE}[My title][end]
+%% If you don't have any title, leave an empty bracket like \begin{thmE}[][end]
+\begin{thmE}[My title][end, restate]
   I am a theorem
 \end{thmE}
 \begin{proofE}
@@ -530,6 +531,7 @@ In anycase, there exists some workarounds, some of the are for instance give in 
 - 2022/02/01:
   1. Fix a typo when defining the shortcut for lemma
   2. Add a shortcut for proposition
+  3. Fix a small spacing issue in the text before the proof in Appendix
 - 2022/01/28:
   1. Fix the issue when using sharps in a proof https://github.com/leo-colisson/proof-at-the-end/issues/7.
   2. Provide `\newEndThm`, `\newEndProof` and the option `createShortEnv` to quickly create environments.
