@@ -222,7 +222,7 @@ An older version of the package explicitely loaded `hyperref` with no option, an
 
 ### Configuration and how to use and create styles ###
 
-You can very easily configure this package, and choose how each theorem/proof must be displayed by providing a value in `OPTIONS`. For example, if you would like to keep the proof of a theorem in the main text like any normal theorem, use the `normal` option:
+You can very easily configure this package, and choose how each theorem/proof must be displayed by providing a value in `OPTIONS`. For example, if you would like to keep the proof of a theorem in the main text like any normal theorem, use the `normal` option.
 
 ```latex
 \begin{theoremEnd}[normal]{thm}[A title]
@@ -232,6 +232,26 @@ You can very easily configure this package, and choose how each theorem/proof mu
   And keep the proof with you!
 \end{proofEnd}
 ```
+
+If you loaded the package using `\usepackage[createShortEnv]{proof-at-the-end}` (starting from 2022/01/28), you also have preconfigured shortcuts for multiple environments, namely `proofE` (to replace `proof`), `thmE` (to replace `thm`), `theoremE` (to replace... ok you got the pattern), `lemmaE`, `propositionE`, `propertyE`, `factE` and `corollaryE`. This way, you can simplify the above as:
+```latex
+\begin{thmE}[A title][normal]
+  You can easily turn a theorem back into a normal theorem!
+\end{thmE}
+\begin{proofE}
+  And keep the proof with you!
+\end{proofE}
+```
+
+(You can of course remove the `[...]` containing the options and the title, however if you want to add options without any title, **make sure to use empty brackets for the title**, like `\begin{thmE}[][normal]`.
+
+Since 2022/01/28, you can also create new theorem environment that directly come with a preconfigured style (you may also find `\pratendSetLocal` useful if you want to change the style in a whole section). For instance to create a `thmNormal` environment having the `normal` option and a `thmSpecial` environment having the `all end, category=mySpecial` options, just do:
+```
+\newEndThm[normal]{thmNormal}{thm} % 'thm' is the name of the existing thm environment 
+\newEndThm[all end, category=mySpecial]{thmSpecial}{thm}
+```
+
+This way, you can simply use `\begin{thmSpecial}[Special title] ... \end{thmSpecial}` to create a theorem going in the special category (see below). (you also have `\newEndProof[options]{newProofEnv}` to define new proofs, but it is less useful as options are typically given in the theorem).
 
 The options are in fact a set of keys/values, thanks to `pgfkeys`. So you can combine them with comma separated list like that (order matters, as the right-most values may overwrite configuration set by left-most values):
 
@@ -273,7 +293,7 @@ Note however that for now it is *not* possible to use macros directly inside the
 }
 ```
 
-or, for short:
+or, for short (needs version > 2022/02/04):
 ```latex
 \pratendSetGlobal{one big link="blabla"}
 ```
@@ -286,19 +306,10 @@ and for local configuration:
 }
 ```
 
-for short:
+for short (needs version > 2022/02/04):
 ```latex
 \pratendSetLocal{category=greattheorem}
 ```
-
-Finally, it can be practical to define custom environments to avoid typing always `theoremEnd` using something like that (`thmE` is the shortcut environment to create, and `thm` is the old one):
-
-```latex
-\newEndThm[normal]{thmE}{thm}
-\newEndProof{proofE}
-```
-
-By default, loading the package using the `createShortEnv` option automatically creates the shortcut environments `proofE` (to replace `proof`), `thmE` (to replace `thm`), `theoremE` (to replace... ok you got the pattern), `lemmaE` and `corollaryE`.
 
 Then you can use like that:
 
@@ -325,7 +336,7 @@ Then you can use like that:
 \end{proofE}
 ```
 
-Note also that it is also possible to give options to the `proofEnd` environment, but it is usually useless, as it will automatically pick the parameters from the last `theoremEnd` environment. However, if for some reasons you want to change the options of the proof only, you can do it, but do it as your own risks ;)
+Note also that it is possible to give options to the `proofEnd` environment, but it is usually useless, as it will automatically pick the parameters from the last `theoremEnd` environment. However, if for some reasons you want to change the options of the proof only, you can do it, but do it as your own risks ;)
 
 ### Usual styles ###
 
@@ -335,10 +346,10 @@ We predefined some pretty common styles/options. The full list is at the end of 
 - `category=yourowncategory`: change the category of the theorem (see next sub-section)
 - `end`: put the proof in appendix
 - `all end`: put both the theorem and the proof in appendix
-- `debug`: make sure the proof is written in the main text as well. Practical when you write the proof to be able to use synctex (if you use synctex with the proof in appendix, your will be unfortunately moved to a temporary file that this library is using... so **make sure you don't modify the files named like `prattheenddefaultcategory.tex` or all your changes will be lost at the next compilation**!).
+- `debug`: make sure the proof is written in the main text as well. Practical when you write the proof to be able to use synctex (if you use synctex with the proof in appendix, your will be unfortunately moved to a temporary file that this library is using... so **make sure you don't modify the files named like `*prattheenddefaultcategory.tex` or all your changes will be lost at the next compilation**!).
 - `one big link`: if you prefer to have a single big link instead of two links (one for the proof, one for the page)
 - `one big link translated=Your translation`: to change/translate the text of the link easily
-- `text link section`: put a link looking like "See proof in section XX."
+- `text link section`: put a link looking like "See proof in section XX.". You can use `text link=` to remove this link.
 - `text link section full proof`: put a link looking like "See full proof in section XX."
 - `text proof translated=Your translation`: to change/translate the text of the proof at the end easily
 - `global custom defaults`: empty style that you can modify to change the configuration (globally)
@@ -449,24 +460,24 @@ You can include a sketch of proof in the main text by simply adding a proof in b
 
 ### Split the article in two documents, one for the main body and one for the appendix ###
 
-Internally, this library creates a new file having the form `NAME_OF_FILE-pratendNAME_CATEGORY.tex` containing the proofs to include (then, `\printProofs` only input that file). You can input that file from other files if you want to separate the body from the proof, but it won't work if you have restate theorems. You should use the option `external appendix` to restate appropriately the theorem:
+Since 2022/02/04, it is possible to include the appendix in a separate file. Internally, this library creates a new file having the form `NAME_OF_FILE-pratendNAME_CATEGORY.tex` containing the proofs to include (then, `\printProofs` only input that file). You can input that file from other files if you want to separate the body from the proof, but it won't work if you have restate theorems. You should use the option `external appendix` (starting from version 2022/02/04) to restate appropriately the theorem:
 
 ```latex
 \usepackage[createShortEnv,conf={external appendix}]{proof-at-the-end}
 ```
 
-Compile your main file, and then create a new file for the appendix, load the theorems environments as for the main file, in the preambule load the `xr` package to properly have references (otherwise you won't have the appropriate number for the theorems):
+Then, compile your main file and create a new file for the appendix, load the theorems environments as for the main file, in the preambule load the `xr` package to properly have references (otherwise you won't have the appropriate number for the theorems) using something like:
 ```
 \usepackage{xr}
 \externaldocument{name_of_main_file_without_extension}
 ```
 
-and then in the document just add where you want the appendix to be added:
+and in this new document just add the appendix wherever you want:
 ```latex
 \includeExternalAppendix{name_of_main_file_without_extension}
 ```
 
-You can see an exemple in the github repository, with the two files `demo_external_appendix.tex` and `demo_external_appendix_part2.tex`.
+You can see an exemple in the github repository, with the two files `demo_external_appendix.tex` and `demo_external_appendix_part2.tex`. Whenever your proofs change in the main paper, make sure to compile first the main document (so that the auxiliary file gets updated), and then compile the appendix document. Note that you can still use `\printProofs` in the main document if you like (while writting your paper, it is certainly easier to keep the proofs and theorems in the same document).
 
 ## List of options ##
 
@@ -485,7 +496,7 @@ Here is the list of fundamental options supported. Most options have a `no` vers
 - `restate command`: name of a unique macro (without backslash) that will be defined as an alias to restate the theorem wherever you want
 - `restated before`: if the theorems has been stated before (with `\theoremProofEndRestateBefore`), then we just need to put the restate command in place of the theorem, and enable this option
 - `both`/`no both`: only for `\textInAppendix`, specifies that the text must be present in both the main text and the appendix.
-- `external appendix`: to ensure the appendix can be included in another file (see details above)
+- `external appendix`: to ensure the appendix can be included in another file (see details above), starting from version 2022/02/04.
 
 Here are all the alias/styles (you can create you own as well), they are practical to quickly define a behaviours, but are made of the basic options listed above:
 
@@ -560,9 +571,9 @@ In anycase, there exists some workarounds, some of the are for instance give in 
 ## Changelog
 
 - 2022/02/04:
-  1. Add a way to put theorems in different files.
+  1. Add a way to put theorems in different files. (see `external appendix`)
   2. Change the path for auxiliary files (should be transparent for the user)
-  3. Add commands to change local/global configuration easily
+  3. Add commands to change local/global configuration easily (see `\pratendSetLocal`,`\pratendSetGlobal`)
 - 2022/02/01:
   1. Fix a typo when defining the shortcut for lemma
   2. Add a shortcut for proposition
