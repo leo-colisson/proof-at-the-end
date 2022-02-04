@@ -7,17 +7,16 @@ WARNING: this package is definitely usable, but may not be as tested and stable 
 This package aims to provide a way to easily move proofs in the appendix. You can:
 
 - Move proofs in different places/sections by giving different "categories" to the theorems
-- Create links from theorem to proof, and from proof to theorem
+- Create links from theorem to proof, and from proof to theorem (and configure the text)
 - Restate the theorem in appendix (or before)
-- Keep the proof in the main body like normal theorems by just adding with just one keyword
+- Choose what you want to keep in the main text or in appendix (you can put in appendix either everything, just the proof, the theorem and the proof by keeping (or not) a copy in the body of the article...)
 - Duplicate the proof in appendix and in the current section, practical to use synctex during the proof writting
-- Add comments that would appear only in the appendix (or in both body and appendix)
-- Move both the theorem and the proof completely in appendix
+- Add text that would appear only in the appendix (or in both body and appendix)
 - Easily change the defaults, and create your own styles/environments
 - Include sketch of proof in the main text, and full proof in appendix
 - Change the text of the link, for example to translate into another language
 - Have a nice environment-based commands in order to mimic the usual theorem/proof structure.
-
+- Separate the main article and the body in two documents (some articles may ask for a separate file for the appendix)
 
 NB: This project is hosted on github at [https://github.com/leo-colisson/proof-at-the-end](https://github.com/leo-colisson/proof-at-the-end) . Feel free to contribute, report bugs, or read/copy-paste the documentation/examples from there.
 
@@ -448,6 +447,27 @@ You can include a sketch of proof in the main text by simply adding a proof in b
 \end{proofEnd}
 ```
 
+### Split the article in two documents, one for the main body and one for the appendix ###
+
+Internally, this library creates a new file having the form `NAME_OF_FILE-pratendNAME_CATEGORY.tex` containing the proofs to include (then, `\printProofs` only input that file). You can input that file from other files if you want to separate the body from the proof, but it won't work if you have restate theorems. You should use the option `external appendix` to restate appropriately the theorem:
+
+```latex
+\usepackage[createShortEnv,conf={external appendix}]{proof-at-the-end}
+```
+
+Compile your main file, and then create a new file for the appendix, load the theorems environments as for the main file, in the preambule load the `xr` package to properly have references (otherwise you won't have the appropriate number for the theorems):
+```
+\usepackage{xr}
+\externaldocument{name_of_main_file_without_extension}
+```
+
+and then in the document just add where you want the appendix to be added:
+```latex
+\includeExternalAppendix{name_of_main_file_without_extension}
+```
+
+You can see an exemple in the github repository, with the two files `demo_external_appendix.tex` and `demo_external_appendix_part2.tex`.
+
 ## List of options ##
 
 Here is the list of fundamental options supported. Most options have a `no` version, with `no ` written before. Note that you may prefer to use directly the alias/styles (see next paragraph) as the options listed here are quite fundamental and atomic.
@@ -465,6 +485,7 @@ Here is the list of fundamental options supported. Most options have a `no` vers
 - `restate command`: name of a unique macro (without backslash) that will be defined as an alias to restate the theorem wherever you want
 - `restated before`: if the theorems has been stated before (with `\theoremProofEndRestateBefore`), then we just need to put the restate command in place of the theorem, and enable this option
 - `both`/`no both`: only for `\textInAppendix`, specifies that the text must be present in both the main text and the appendix.
+- `external appendix`: to ensure the appendix can be included in another file (see details above)
 
 Here are all the alias/styles (you can create you own as well), they are practical to quickly define a behaviours, but are made of the basic options listed above:
 
@@ -538,6 +559,10 @@ In anycase, there exists some workarounds, some of the are for instance give in 
 
 ## Changelog
 
+- 2022/02/04:
+  1. Add a way to put theorems in different files.
+  2. Change the path for auxiliary files (should be transparent for the user)
+  3. Add commands to change local/global configuration easily
 - 2022/02/01:
   1. Fix a typo when defining the shortcut for lemma
   2. Add a shortcut for proposition
