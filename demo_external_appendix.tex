@@ -1,0 +1,34 @@
+\documentclass{article}
+
+\usepackage{xparse} % Not needed with recent LaTeX
+\usepackage{amsthm}
+
+% Create new theorems, or use ntheorem/thmtools/...
+\newtheorem{thm}{Theorem}[section]
+% Default uses autoref, but you can also use cleveref, see the documentation.
+% Say to autoref that "thm" are Theorems.
+\newcommand{\thmautorefname}{Theorem}
+
+%% Load the library. createShortEnv automatically creates the shortcuts
+%% thmE, theoremE, lemmaE, propositionE, corollaryE, proofE. See \newEndThm for more details.
+%% The "external appendix" option is used to ensure theorem are restatable with the auxiliary file is
+%% opened inside another file (do load the xr package for crossreferences)
+\usepackage[createShortEnv,conf={external appendix}]{proof-at-the-end}
+
+\begin{document}
+
+\section{Theorems}
+
+%% If you don't have any title, leave an empty bracket like \begin{thmE}[][end]
+\begin{thmE}[My title][end, restate]
+  I am a theorem
+\end{thmE}
+\begin{proofE}
+  And I am a proof.
+\end{proofE}
+
+\section{Proofs}
+
+In this document, we made the choice to display the appendix in another file.  Compile \verb|demo_external_appendix_part2.tex| now ;)
+
+\end{document}

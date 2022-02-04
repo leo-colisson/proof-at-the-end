@@ -1,0 +1,33 @@
+\documentclass{article}
+%%% !!! WARNING: to 
+
+\usepackage{xparse} % Not needed with recent LaTeX
+\usepackage{amsthm}
+
+% Create new theorems, or use ntheorem/thmtools/...
+\newtheorem{thm}{Theorem}[section]
+% Default uses autoref, but you can also use cleveref, see the documentation.
+% Say to autoref that "thm" are Theorems.
+\newcommand{\thmautorefname}{Theorem}
+
+%% Load the library. createShortEnv automatically creates the shortcuts
+%% thmE, theoremE, lemmaE, propositionE, corollaryE, proofE. See \newEndThm for more details.
+%% The standalone option is used to ensure theorem are restatable with the auxiliary file is
+%% opened inside another file (do load the xr package for crossreferences)
+\usepackage[createShortEnv]{proof-at-the-end}
+
+%%% !!! This part is important to get working references
+\usepackage{xr}
+\externaldocument{demo_external_appendix}
+
+\begin{document}
+
+%% Do NOT put the extention, as it corresponds to the "jobname"
+%% Make sure also to update the \externaldocument options of xr to get cross references working.
+%% Note that this command does nothing more than \input{} on the auxiliary file created by this library.
+%% Its name is typically "NAME_OF_FILE-pratendNAME_CATEGORY.tex", you should distribute it
+%% (or copy it here) together with this file, for instance if you submit to a journal asking for the sources
+%% of your appendix.
+\includeExternalAppendix{demo_external_appendix} 
+
+\end{document}

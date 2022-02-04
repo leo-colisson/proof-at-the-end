@@ -9,7 +9,7 @@ buildpratend/**
 *.fls
 *.fdb_latexmk
 debug*
-pratenddefaultcategory.tex
-pratendgreattheorem.tex
+*pratenddefaultcategory.tex
+*pratendgreattheorem.tex
 debug.tex
 

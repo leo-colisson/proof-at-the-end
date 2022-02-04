@@ -72,10 +72,16 @@
   \endgroup
 }
 
+%% Get the prefix of the file, given the jobname.
+\NewDocumentCommand\pratendGeneratePrefixFile{m}{#1-pratend}
+
+\def\prefixPrAtEndFiles{\pratendGeneratePrefixFile{\jobname}}
+
+
 %% This functions takes one input: the category (without .tex),
 %% If it's the first time we write in this
 %% category file, it "blanks" it.
-\def\prefixPrAtEndFiles{pratend}
+
 \newcommand*\eraseIfNeeded[1]{%
   % A macro 'pratendmacrocat{category}' is created to check
   % if it's the first time we write in this category file.
@@ -92,6 +98,7 @@
 \newif\ifproofhere
 \newif\ifproofend
 \newif\ifrestatethm
+\newif\ifexternalAppendix% True if the output file should me inputable in another file (using xr for crossref). Useful to remote restate.
 \newif\iflinktoproof
 \newif\ifboth
 \newif\ifallattheend
@@ -109,6 +116,8 @@
   %% Display the proof when using \printProofs
   proof end/.is if=proofend,
   no proof end/.style={proof end=false},
+  %% Restate the theorem when using \printProofs
+  external appendix/.is if=externalAppendix,
   %% Restate the theorem when using \printProofs
   restate/.is if=restatethm,
   no restate/.style={restate=false},
@@ -291,9 +300,13 @@
     %% Restate the theorem if needed in appendix.
     %% As explained in https://github.com/leo-colisson/proof-at-the-end/issues/8
     %% No need to restate of there is no proof at the end.
-    \ifproofend %
-      \ifrestatethm %
-        \appendtofile{\prefixPrAtEndFiles\category.tex}{\string\prAtEndRestate\pratendcountercurrent*}%
+    \ifproofend%
+      \ifrestatethm%
+        \ifexternalAppendix% We write the full theorem, useful to compile in a separate file (use xr for references)
+          \appendtofile{\prefixPrAtEndFiles\category.tex}{\string\begingroup\string\renewcommand\string\the\detokenize{#2}{\string\ref{thm:prAtEnd\pratendcountercurrent}}\string\begin{\detokenize{#2}}[#3]\detokenize{#4}\string\end{\detokenize{#2}}\string\endgroup}%
+        \else%
+          \appendtofile{\prefixPrAtEndFiles\category.tex}{\string\prAtEndRestate\pratendcountercurrent*}%
+        \fi%
       \fi%
     \fi%
   \fi%  
@@ -487,5 +500,32 @@
   \newEndThm{corollaryE}{corollary}
   \newEndThm{propositionE}{proposition}
 \fi
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Create functions to easily overwrite defaults
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NewDocumentCommand\pratendSetGlobal{m}{%
+  \pgfkeys{/prAtEnd/global custom defaults/.style={
+      #1
+    }%
+  }%
+}
+
+\NewDocumentCommand\pratendSetLocal{m}{%
+  \pgfkeys{/prAtEnd/local custom defaults/.style={
+      #1
+    }%
+  }%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Create functions to load the category file in another file (external bibliography)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Takes an optional category, and the job name of the external file.
+\NewDocumentCommand\includeExternalAppendix{O{defaultcategory}m}{%
+  \expandafter\input{\pratendGeneratePrefixFile{#2}#1}
+}
 
 \endinput

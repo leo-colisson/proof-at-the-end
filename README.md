@@ -274,12 +274,22 @@ Note however that for now it is *not* possible to use macros directly inside the
 }
 ```
 
+or, for short:
+```latex
+\pratendSetGlobal{one big link="blabla"}
+```
+
 and for local configuration:
 ```latex
 \pgfkeys{/prAtEnd/local custom defaults/.style={
     category=greattheorem
   }
 }
+```
+
+for short:
+```latex
+\pratendSetLocal{category=greattheorem}
 ```
 
 Finally, it can be practical to define custom environments to avoid typing always `theoremEnd` using something like that (`thmE` is the shortcut environment to create, and `thm` is the old one):
