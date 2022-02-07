@@ -515,6 +515,9 @@ Here are all the alias/styles (you can create you own as well), they are practic
 - `default text link`: default text for the link to the proof, equivalent of `text link={See \hyperref[proof:prAtEnd\pratendcountercurrent]{proof} on page~\pageref{proof:prAtEnd\pratendcountercurrent}.}`
 - `default text proof`: default text for the proof in appendix, equivalent of `text proof={Proof of \string\pratendRef{thm:prAtEnd\pratendcountercurrent}}`
 - `text proof translated`: like `default text proof`, but takes one argument and use it instead of `Proof of`. Example: `text proof translated={Preuve du}`
+- `text link external appendix`: style used to configure the text to display when the appendix is in an external file. Defaults to `text link={The proof is in the appendix.}`.
+- `external appendix`: useful when the the proofs are moved in an external file (read more above). In particular, it will ensure that normal theorems are used instead of restate since restate does not work across files. This will also apply `text link external appendix` to change the text accordingly.
+- `only external appendix`: like `external appendix`, but without changing the text.
 - `bare defaults`: default style that is loaded before anything else that configure by default a link to the proof, put the proof in appendix, use the category `defaultcategory`. It is an alias of `end, link to proof, no restate,category=defaultcategory, default text link,default text proof,restate command=pratenddummymacro`.
 - `configuration options`: style that contains the options used to load the package. It is called right after `bare defaults`. Note that you cannot insert macro in the options, overwrite `global custom defaults` instead
 - `global custom defaults`: empty style that you can overwrite to change the global defaults
@@ -570,6 +573,9 @@ In anycase, there exists some workarounds, some of the are for instance give in 
 
 ## Changelog
 
+- 2022/02/07:
+  1. [issue 2](https://github.com/leo-colisson/proof-at-the-end/issues/2) was not really solved in fact... Now, I use a more robust method to detect the current section: I write in an AUX file the label of the proof section. This way, I don't need anymore to use dirty tricks to recover the section label.
+  2. Change the default text when the appendix is in an external file, and add options like `text link external appendix` to customize the text appearing when the appendix is in an external file. Of course, you can still change it using `text link` directly.
 - 2022/02/04:
   1. Add a way to put theorems in different files. (see `external appendix`)
   2. Change the path for auxiliary files (should be transparent for the user)

@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{proof-at-the-end}[2022/02/04 A package to move proofs in appendix]
+\ProvidesPackage{proof-at-the-end}[2022/02/07 A package to move proofs in appendix]
  
 \RequirePackage{etoolbox}
 \RequirePackage{thmtools}
@@ -117,7 +117,14 @@
   proof end/.is if=proofend,
   no proof end/.style={proof end=false},
   %% Restate the theorem when using \printProofs
-  external appendix/.is if=externalAppendix,
+  only external appendix/.is if=externalAppendix,
+  text link external appendix/.style={
+    text link={The proof is in the appendix.}
+  },
+  external appendix/.style={
+    only external appendix,
+    text link external appendix,
+  },
   %% Restate the theorem when using \printProofs
   restate/.is if=restatethm,
   no restate/.style={restate=false},
@@ -344,13 +351,41 @@
   \fi%
   %% Write the proof at the end
   \ifproofend%
+  \appendtofile{\prefixPrAtEndFiles\category.tex}{%
     %% The label alone adds some space, see e.g.
     %% https://tex.stackexchange.com/questions/600118/selectlanguage-in-the-middle-of-text-causes-extra-vertical-space/600142#600142
     %% and https://tex.stackexchange.com/questions/600577/adding-a-label-between-two-proofs-adds-unwanted-space
     %% The solution is to use \\Hy@SaveLastskip and \Hy@RestoreLastskip from hyperref
     %% See also
     %% https://tex.stackexchange.com/questions/553394/reliably-add-a-label-to-the-current-section-even-if-the-label-is-not-placed-rig/600847#600847
-    \appendtofile{\prefixPrAtEndFiles\category.tex}{\string\makeatletter\string\Hy@SaveLastskip\string\pratendChangeCurrentLabel\string\label{proofsection:prAtEnd\pratendcountercurrent}\string\Hy@RestoreLastskip\string\makeatother\string\begin{proof}[\pratendtextproof]\string\phantomsection\string\label{proof:prAtEnd\pratendcountercurrent}\detokenize{#2}\string\end{proof}}%
+    \string\makeatletter\string\Hy@SaveLastskip%
+    %% This tries to recover the label of the current section... But it is very bad. I keep it only for backward compatibility. I tried to fix it by changing the value of \@counter, but it's not always working
+    %% as cref is not using it apparently, and it turns Appendix A into appendix a after using phantomsection.
+    %% https://github.com/leo-colisson/proof-at-the-end/issues/2
+    \string\label{proofsection:prAtEnd\pratendcountercurrent}% WARNING <-- do not use this label in new documents!
+    % the problem is that setting the \@currentlabel does not work for cref, and turns Appendix A
+    % into section A when a phantomsection lies in between (not sure why):
+    % https://github.com/leo-colisson/proof-at-the-end/issues/2
+    %% Now, we prefer a different method: instead we generate a single label per section, and we generate
+    %% a new macro in the aux file that will save this label, by creating one such macro per theorem.
+    %% This is basically doing something like \pratend@section@for@proofiii{prAtEnd:sectionlike3}
+    %% Note that I need sometimes 3 \string because I write two times: the first time I write in the FILE-pratendCATEGORY.tex
+    %% file, and this file will be in charge of writting into the .aux file.
+    \string\ifdefined\string\pratend@current@sectionlike@label% But before, we check if the section was defined, or the code may fail if no section are defined.
+      \string\immediate\string\write\string\@auxout{%
+        \string\string\string\gdef\string\string\string\pratend@section@for@proof\pratendcountercurrent{\string\pratend@current@sectionlike@label}%
+      }%
+    \string\fi
+    % See above
+    \string\Hy@RestoreLastskip\string\makeatother%
+    % We start the proof
+    \string\begin{proof}[\pratendtextproof]%
+      % We add a label to have a reference to the section
+      \string\phantomsection\string\label{proof:prAtEnd\pratendcountercurrent}%
+      % We add the proof
+      \detokenize{#2}%
+      % We end the proof
+      \string\end{proof}}%
   \fi%
 }{}
 
@@ -398,7 +433,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % We patch the \section, \subsection and \chapter commands to make sure that
 % the text "See proof in Section XX" points to the appropriate section/subsection.
-% We basically maintain a counter counting how many time we saw a section/subsection/... and use it to label
+% We basically maintain a counter counting how many times we saw a section/subsection/... and use it to label
 % directly the section afterwards.
 \newcounter{pratend@counter@sectionlike}
 %% Command to add after a label like "prAtEnd:sectionlike10". Useful to patch \section, \chapter...
@@ -406,17 +441,21 @@
   %% First, we get the label
   %% Cool explaination of expandafter, edef, noexpand:
   %%% https://www.tug.org/TUGboat/tb09-1/tb20bechtolsheim.pdf
+  %% The label \pratend@current@sectionlike@label is used later.
   \edef\pratend@current@sectionlike@label{prAtEnd:sectionlike\thepratend@counter@sectionlike}%
   \expandafter\label{\pratend@current@sectionlike@label}%
-  \let\pratend@sectionlike@stored@label\@currentlabel%
+  \stepcounter{pratend@counter@sectionlike}%
+}%
+%% Returns the label of the section (in appendix) that contains the proof of the current theorem.
+%% The first time, it will return an empty label.
+\NewDocumentCommand\pratendLabelProofSection{}{%
+  \ifcsname pratend@section@for@proof\pratendcountercurrent\endcsname%
+    \csname pratend@section@for@proof\pratendcountercurrent\endcsname%
+  \fi%
 }%
 \NewDocumentCommand\pratendSectionlikeCref{}{%
-  \pratendRef{proofsection:prAtEnd\pratendcountercurrent}%
-}
-\NewDocumentCommand\pratendChangeCurrentLabel{}{%
-  \ifdefined\pratend@sectionlike@stored@label%
-    \let\@currentlabel\pratend@sectionlike@stored@label%
-  \fi%
+  % \pratendRef{proofsection:prAtEnd\pratendcountercurrent}% This is not robust enough. Lets change strategy.
+  \expandafter\pratendRef{\pratendLabelProofSection}
 }
 \ifpratendOptdisablePatchSection%
 \else  %
@@ -444,6 +483,7 @@
 \NewDocumentCommand\pratendRef{m}{%
   \csname \pratendOptcommandRef\endcsname{#1}%
 }
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Create automatically wrapper
