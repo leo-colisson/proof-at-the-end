@@ -304,7 +304,6 @@ It should also deal with protected commands: $\mathtt{mathtt}$:
   With a normal proof  
 \end{proofEnd}
 
-
 \section{Section with late theorems}\label{sec:restateafter}
 \begin{theoremEnd}[restated before]{thm}
   laterrestatable
@@ -312,6 +311,60 @@ It should also deal with protected commands: $\mathtt{mathtt}$:
 \begin{proofEnd}
   To state a theorem before the initial definition, use theoremEndRestateBefore environment where you first want to state the theorem, with a unique name in the second mandatory argument, and when you want to insert the theorem for the second time, use the usual theoremProofEnd command with the same unique name as before in place of the theorem definition and the ``restated before'' option.  
 \end{proofEnd}
+
+\pratendEnableDebugSynctex{}
+
+\begin{thmE}[My own environment][end]
+  This proof
+
+  should go
+
+  in appendix.
+
+  But to make synctex work
+
+  we can force the environments
+
+  to behave like normal theorems or proofs
+
+  using \texttt{pratendEnableDebugSynctex} and \texttt{pratendDisableDebugSynctex} around the theorem.
+
+  You can try now (note that restate is not compatible with this mode as the restate library is not working with synctex due to a quite \href{https://tex.stackexchange.com/questions/643294/synctex-make-it-work-with-environment-accessing-its-content-e-g-environ-or-xp}{fundamental limitation of LaTeX}).
+\end{thmE}
+\begin{proofED}
+  See
+
+  how this
+
+  long proof works
+
+  with synctex now. And solve \href{https://github.com/leo-colisson/proof-at-the-end/issues/10}{Issue 10}.
+\end{proofED}
+
+
+\pratendDisableDebugSynctex{}
+
+You can also use shortcuts like:
+
+\begin{thmED}[My own environment][end]
+  Here
+
+  Is
+
+  An
+
+  example to test synctex.
+\end{thmED}
+\begin{proofEndDebug}
+  See
+
+  how this
+
+  long proof works
+
+  with synctex now.
+\end{proofEndDebug}
+
 
 \section{Section with standard proofs}
 % \verbatiminput{defaultcategory}

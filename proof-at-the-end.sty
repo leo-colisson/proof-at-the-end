@@ -267,7 +267,7 @@
   \end{restatable*}%
 }{}
 
-\NewDocumentEnvironment{theoremEnd}{O{}mO{}+b}{
+\NewDocumentEnvironment{theoremEndOrig}{O{}mO{}+b}{
   % The first facultative argument will be the options: type of proof you want, the file to which you want to write...
   % The first mandatory option is the type of the theorem (thm,lemma,...)
   % The second facultative argument will be the title
@@ -329,7 +329,16 @@
   \fi%
 }{}
 
-\NewDocumentEnvironment{proofEnd}{O{}+b}{
+
+%% See proofEnableDebugSynctex
+%%% WARNING: if you change this function, change also proofDisableDebugSynctex
+\NewDocumentEnvironment{theoremEnd}{O{}mO{}+b}{%
+  \begin{theoremEndOrig}[#1]{#2}[#3]
+    #4%
+  \end{theoremEndOrig}%
+}{}
+
+\NewDocumentEnvironment{proofEndOrig}{O{}+b}{
   \pgfkeys{%
     /prAtEnd/.cd,
     all defaults,
@@ -388,6 +397,42 @@
       \string\end{proof}}%
   \fi%
 }{}
+
+%%% WARNING: if you change this function, change also proofDisableDebugSynctex
+\NewDocumentEnvironment{proofEnd}{O{}+b}{%
+  \begin{proofEndOrig}[#1]%
+    #2
+  \end{proofEndOrig}%
+}{}
+
+
+%%%%% For synctex debugging
+%% Turns https://github.com/leo-colisson/proof-at-the-end/issues/10
+\NewDocumentCommand{\pratendEnableDebugSynctex}{}{%
+  \RenewDocumentEnvironment{theoremEnd}{O{}mO{}}{\begin{##2}}{\end{##2}}
+  \RenewDocumentEnvironment{proofEnd}{O{}}{\begin{proof}}{\end{proof}}
+}
+
+%% Turns https://github.com/leo-colisson/proof-at-the-end/issues/10
+\NewDocumentCommand{\pratendDisableDebugSynctex}{}{%
+  \RenewDocumentEnvironment{theoremEnd}{O{}mO{}+b}{%
+    \begin{theoremEndOrig}[##1]{##2}[##3]%
+      ##4%
+    \end{theoremEndOrig}%
+  }{}%
+  \RenewDocumentEnvironment{proofEnd}{O{}+b}{%
+    \begin{proofEndOrig}[##1]%
+      ##2%
+    \end{proofEndOrig}%
+  }{}
+}
+
+\NewDocumentEnvironment{proofEndDebug}{O{}}{%
+  \begin{proof}%
+  }{%
+  \end{proof}%
+}
+\NewDocumentEnvironment{theoremEndDebug}{O{}mO{}}{\begin{#2}}{\end{#2}}
 
 
 %%%%% Text in appendix
@@ -502,6 +547,13 @@
   \NewDocumentEnvironment{#2}{O{}O{}}{%
     \begin{theoremEnd}[#1,##2]{#3}[##1]%
     }{\end{theoremEnd}}%
+  \NewDocumentEnvironment{#2D}{O{}O{}}{%
+    \bgroup%
+    \pratendEnableDebugSynctex{}%
+    \begin{theoremEnd}[#1,##2]{#3}[##1]%
+    }{\end{theoremEnd}%
+    \egroup%
+  }%
 }
 
 % \NewDocumentCommand{\newEndThm}{O{}mm}{%
@@ -517,15 +569,20 @@
 %   }{}
 % }
 
-%% Avoid to manually type \NewDocumentEnvironment...
-%% Usage: \newEndProof[default options]{new proof environment}{old proof environment}
-% E.g.: \newEndProof[]{proofE}{proof}
+%%   Avoid to manually type \NewDocumentEnvironment...
+%%   Usage: \newEndProof[default options]{new proof environment}{old proof environment}
+%   E.g.: \newEndProof[]{proofE}{proof}
 \NewDocumentCommand{\newEndProof}{O{}m}{%
   \NewDocumentEnvironment{#2}{O{}+b}{%
     \begin{proofEnd}[#1,##1]%
       ##2%
     \end{proofEnd}%
   }{}%
+  \NewDocumentEnvironment{#2D}{O{}}{%
+    \begin{proofEndDebug}[##1]%
+    }{%
+    \end{proofEndDebug}%
+  }%
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

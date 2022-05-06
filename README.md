@@ -16,7 +16,7 @@ This package aims to provide a way to easily move proofs in the appendix. You ca
 - Include sketch of proof in the main text, and full proof in appendix
 - Change the text of the link, for example to translate into another language
 - Have a nice environment-based commands in order to mimic the usual theorem/proof structure.
-- Separate the main article and the body in two documents (some articles may ask for a separate file for the appendix)
+- Separate the main article and the body in two documents (some journals may ask for a separate file for the appendix)
 
 NB: This project is hosted on github at [https://github.com/leo-colisson/proof-at-the-end](https://github.com/leo-colisson/proof-at-the-end) . Feel free to contribute, report bugs, or read/copy-paste the documentation/examples from there.
 
