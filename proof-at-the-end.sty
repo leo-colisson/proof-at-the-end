@@ -477,7 +477,7 @@
 %%%   Patch sections, chapters...
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % We patch the \section, \subsection and \chapter commands to make sure that
-% the text "See proof in Section XX" points to the appropriate section/subsection.
+% the text "See proof in Section XX" points to the appropriate section/subsection (option conf={text link section}).
 % We basically maintain a counter counting how many times we saw a section/subsection/... and use it to label
 % directly the section afterwards.
 \newcounter{pratend@counter@sectionlike}
@@ -487,7 +487,7 @@
   %% Cool explaination of expandafter, edef, noexpand:
   %%% https://www.tug.org/TUGboat/tb09-1/tb20bechtolsheim.pdf
   %% The label \pratend@current@sectionlike@label is used later.
-  \edef\pratend@current@sectionlike@label{prAtEnd:sectionlike\thepratend@counter@sectionlike}%
+  \xdef\pratend@current@sectionlike@label{prAtEnd:sectionlike\thepratend@counter@sectionlike}%
   \expandafter\label{\pratend@current@sectionlike@label}%
   \stepcounter{pratend@counter@sectionlike}%
 }%
@@ -504,20 +504,29 @@
 }
 \ifpratendOptdisablePatchSection%
 \else  %
-  %% Add the above command to \chapter if the command exists
-  \ifdef{\@chapter}{
-    \ifpatchable*{\@chapter}{
-      \apptocmd{\@chapter}{\pratendAddLabel}{}{}%
-    }{\PackageWarning{proof-at-the-end}{Chapters are not patchable.}{}}
-  }{}
-  %% patch sections/subsections/paragraph/...
-  %% https://tex.stackexchange.com/questions/631713/patch-section-command-fails/631717?noredirect=1#comment1575337_631717
-  \ifdef{\@sect}{
-    % \apptocmd{\section}{\pratendAddLabel}{}{}%
-    \ifpatchable*{\@sect}{
-      \apptocmd{\@sect}{\pratendAddLabel}{}{}%
-    }{\PackageWarning{proof-at-the-end}{Sections are not patchable.}{}}
-  }{}
+  %% Add the command \pratendAddLabel to \chapter/sections… if the command exists
+  %% KOMA class need a special treatment
+  \@ifundefined{KOMAClassName}{%
+    % For articles/...
+    \ifdef{\@chapter}{
+      \ifpatchable*{\@chapter}{
+        \apptocmd{\@chapter}{\pratendAddLabel}{}{}%
+      }{\PackageWarning{proof-at-the-end}{Chapters are not patchable.}{}}
+    }{}
+    %% patch sections/subsections/paragraph/...
+    %% https://tex.stackexchange.com/questions/631713/patch-section-command-fails/631717?noredirect=1#comment1575337_631717
+    \ifdef{\@sect}{
+      % \apptocmd{\section}{\pratendAddLabel}{}{}%
+      \ifpatchable*{\@sect}{
+        \apptocmd{\@sect}{\pratendAddLabel}{}{}%
+      }{\PackageWarning{proof-at-the-end}{Sections are not patchable.}{}}
+    }{}%
+  }{%
+    %% For KOMA classes/... or it won't work with scrreport
+    %% \AddtoDoHook{heading/endgroup/chapter} is too specific 
+    \AddtoDoHook{heading/endgroup/chapter}{\pratendAddLabel}%
+    \AddtoDoHook{heading/endgroup/section}{\pratendAddLabel}%
+  }%
 \fi
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
