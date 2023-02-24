@@ -1,5 +1,6 @@
 \documentclass{article}
 
+\usepackage{amsmath}
 \usepackage{xparse} % Not needed with recent LaTeX
 \usepackage{amsthm}
 
@@ -14,17 +15,21 @@
 %% The "external appendix" option is used to ensure theorem are restatable with the auxiliary file is
 %% opened inside another file (do load the xr package for crossreferences)
 \usepackage[createShortEnv,conf={external appendix}]{proof-at-the-end}
-
+\usepackage{hyperref}
+\usepackage{cleveref}
 \begin{document}
 
-\section{Theorems}
+\section{Theorems}\label{sec:theorems}
 
 %% If you don't have any title, leave an empty bracket like \begin{thmE}[][end]
 \begin{thmE}[My title][end, restate]
-  I am a theorem
+  I am a theorem:
+  \begin{align}
+    1+1 &= 2 \label{eq:nontrivialfact}
+  \end{align}
 \end{thmE}
 \begin{proofE}
-  And I am a proof.
+  And I am a trivial proof: $1+1=2$.
 \end{proofE}
 
 \begin{thmE}[][all end]

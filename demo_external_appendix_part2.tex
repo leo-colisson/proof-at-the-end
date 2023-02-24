@@ -1,4 +1,5 @@
 \documentclass{article}
+\usepackage{amsmath}
 %%% !!! WARNING: to 
 
 \usepackage{xparse} % Not needed with recent LaTeX
@@ -22,6 +23,8 @@
 
 \title{Appendix}
 
+\usepackage{hyperref}
+\usepackage{cleveref}
 
 \begin{document}
 \maketitle
@@ -30,6 +33,8 @@
 
 \section{Appendix}
 
+We prove here theorems stated in \cref{sec:theorems}, more specifically \cref{eq:nontrivialfact}.
+
 %% Do NOT put the extention, as it corresponds to the "jobname"
 %% Make sure also to update the \externaldocument options of xr to get cross references working.
 %% Note that this command does nothing more than \input{} on the auxiliary file created by this library.
@@ -37,5 +42,6 @@
 %% (or copy it here) together with this file, for instance if you submit to a journal asking for the sources
 %% of your appendix.
 \includeExternalAppendix{demo_external_appendix} 
+
 
 \end{document}
