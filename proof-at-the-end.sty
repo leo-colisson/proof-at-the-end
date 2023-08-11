@@ -272,7 +272,7 @@
   % The first mandatory option is the type of the theorem (thm,lemma,...)
   % The second facultative argument will be the title
   % the second mandatory option is the theorem (will \label inside eventually)
-  % the last mandatory option is the proof
+  % the last mandatory option is the proof, or, if restated, the name of the theorem.
   \global\def\pratendlastoptions{#1}%
   \pgfkeys{%
     /prAtEnd/.cd,
@@ -338,7 +338,7 @@
   \end{theoremEndOrig}%
 }{}
 
-\NewDocumentEnvironment{proofEndOrig}{O{}+b}{
+\NewDocumentEnvironment{proofEndOrig}{O{}+b}{%
   \pgfkeys{%
     /prAtEnd/.cd,
     all defaults,
@@ -346,7 +346,7 @@
     prAtEndTmpStyle,
     #1
   }%
-  \unless\ifallattheend
+  \unless\ifallattheend%
     %% Write eventually a link to the proof
     \iflinktoproof%
       \pratendtextlink{}%
