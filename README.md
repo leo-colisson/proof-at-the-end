@@ -592,7 +592,7 @@ Another option is to replace your class `proof` environment with, for instance, 
 \let\endproof\undefined
 \usepackage{amsthm}
 ```
-but ensure that `amsthm` does not produce additional conflicts.
+but ensure that `amsthm` does not produce additional conflicts. This method will write `Proof of Lemma X.` before starting the proof.
 
 ## Changelog
 
