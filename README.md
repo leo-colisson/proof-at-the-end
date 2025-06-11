@@ -570,9 +570,33 @@ In anycase, there exists some workarounds, some of the are for instance give in 
 \end{thmE}
 ```
 
+### The proof writes `Proof (Proof of Lemma X)` (or something else) instead of `Proof of Lemma X.`
+
+If the proof starts with something different from `Proof of Lemma X`, you are likely to use a class/package that defines a `proof` environment different from the one defined in `amsthm`, like `svjour3` by Springer. To fix this, you have two options: if you want to keep using the original `proof` environment, and get something like `Proof (Lemma X)`, you can either configure:
+
+```
+\pratendSetGlobal{
+  text proof={\string\pratendRef{thm:prAtEnd\pratendcountercurrent}},
+}
+```
+
+or, if you use a version greater than 2025/06/11 (included), you can simply call the `text proof only theorem`, either like in `\pratendSetGlobal{text proof only theorem}` or directly when loading the package:
+```
+\usepackage[createShortEnv, conf={text proof only theorem}]{proof-at-the-end}
+```
+
+Another option is to replace your class `proof` environment with, for instance, the one provided by `amsthm` like in:
+```
+% Removes the environment 'proof' defined by the class and replaces it with the one of amsthm:
+\let\proof\undefined
+\let\endproof\undefined
+\usepackage{amsthm}
+```
+but ensure that `amsthm` does not produce additional conflicts.
 
 ## Changelog
 
+- 2025/06/11: Add `text proof only theorem`
 - 2022/02/07:
   1. [issue 2](https://github.com/leo-colisson/proof-at-the-end/issues/2) was not really solved in fact... Now, I use a more robust method to detect the current section: I write in an AUX file the label of the proof section. This way, I don't need anymore to use dirty tricks to recover the section label.
   2. Change the default text when the appendix is in an external file, and add options like `text link external appendix` to customize the text appearing when the appendix is in an external file. Of course, you can still change it using `text link` directly.

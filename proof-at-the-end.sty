@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{proof-at-the-end}[2022/02/07 A package to move proofs in appendix]
+\ProvidesPackage{proof-at-the-end}[2025/06/11 A package to move proofs in appendix]
  
 \RequirePackage{etoolbox}
 \RequirePackage{thmtools}
@@ -213,6 +213,9 @@
   },
   default text proof/.style={
     text proof={Proof of \string\pratendRef{thm:prAtEnd\pratendcountercurrent}},
+  },
+  text proof only theorem/.style={
+    text proof={\string\pratendRef{thm:prAtEnd\pratendcountercurrent}},
   },
   %%%% Defaults
   bare defaults/.style={
