@@ -37,7 +37,12 @@ pdflatex demo.tex && pdflatex demo.tex
 
 ### Super Quick QuickStart ###
 
-If `proof-at-the-end` it's not installed in your CTAN distribution, copy the [`proof-at-the-end.sty` file](https://github.com/leo-colisson/proof-at-the-end/) in your project. Then, in your project, create new theorem/lemma environments (using any tool you like, like asmthm, ntheorem and thmtools), load the library using `\usepackage[createShortEnv]{proof-at-the-end}` (note that you need the version 2022/01/28 to have `createShortEnv` defined, otherwise you need to use directly `theoremEnd`, and until [this upstream `thmtool` bug](https://github.com/muzimuzhi/thmtools/issues/70) is fixed, make sure to load it after using `\newtheorem` or to call `\hypersetup{hypertexnames=false}` if you don't build an index, otherwise links will be broken) and write your theorem using:
+If `proof-at-the-end` it's not installed in your CTAN distribution, copy the [`proof-at-the-end.sty` file](https://github.com/leo-colisson/proof-at-the-end/) in your project. Then, in your project, create new theorem/lemma environments (using any tool you like, like asmthm, ntheorem and thmtools), just, until [this upstream `thmtool` bug](https://github.com/muzimuzhi/thmtools/issues/70) is fixed, links will be broken unless you do one of the following actions:
+- call `\hypersetup{hypertexnames=false}` at the end of the preamble (but this may fails if you build an index),
+- or, possibly cleaner, if you use something like `\newtheorem{thm}{Theorem}[section]`, then you must call `\renewcommand\theHthm{\thesection .\arabic {thm}}`.
+If you are unhappy with these workarounds, raise your voice in the above `thmtool` issue.
+
+Then, load the library using `\usepackage[createShortEnv]{proof-at-the-end}` (note that you need the version 2022/01/28 to have `createShortEnv` defined, otherwise you need to use directly `theoremEnd`) and write your theorem using:
 
 ```latex
 \begin{thmE}[My title][end, restate]

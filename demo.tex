@@ -7,6 +7,9 @@
 
 % Load the package (put the proof-at-the-end.sty file in the working directory)
 % with default options and shortcuts for thmE/... WARNING: this requires a version above 2022/01/28.
+
+\usepackage[createShortEnv]{proof-at-the-end}
+
 % If you use cref, use instead:
 % \usepackage[createShortEnv,commandRef=Cref]{proof-at-the-end}
 % You can change the default options in the 'conf' option:
@@ -33,21 +36,6 @@
 %   }
 % }
 
-%% Define your theorem/lemma/... environments the way you want:
-% Theorems
-\newtheorem{thm}{Theorem}[section]
-\newtheorem*{thm*}{Theorem}
-\providecommand*\thmautorefname{Theorem}
-% Lemmata
-\newtheorem{lemma}[thm]{Lemma}
-\newtheorem*{lemma*}{Lemma}
-\providecommand*\lemmaautorefname{Lemma}
-
-% WARNING: load this AFTER \newtheorem due to a bug in thmtools
-% https://github.com/muzimuzhi/thmtools/issues/70
-% or call \hypersetup{hypertexnames=false} (but does not work if you use index)
-\usepackage[createShortEnv]{proof-at-the-end}
-
 %% If you want you can define shortcuts to create new theorem.
 %% Since 2022/01/28, the option createShortEnv automatically defines
 %% shortcuts for thmE, theoremE, lemmaE...
@@ -61,7 +49,20 @@
 %   \end{theoremEnd}%
 % }{}
 
+% Last loaded package (except cleveref that must be loaded even later)
 \usepackage{hyperref}
+
+%% Define your theorem/lemma/... environments the way you want (must be called after hyperref https://tex.stackexchange.com/q/757925/116348):
+% Theorems
+\newtheorem{thm}{Theorem}[section]
+\newtheorem*{thm*}{Theorem}
+\providecommand*\thmautorefname{Theorem}
+\renewcommand\theHthm{\thesection .\arabic {thm}} % Needed until https://github.com/muzimuzhi/thmtools/issues/70 is fixed or use \hypersetup{hypertexnames=false}
+% Lemmata
+\newtheorem{lemma}[thm]{Lemma}
+\newtheorem*{lemma*}{Lemma}
+\providecommand*\lemmaautorefname{Lemma}
+\renewcommand\theHlemma{\thesection .\arabic {lemma}} % Needed until https://github.com/muzimuzhi/thmtools/issues/70 is fixed or use \hypersetup{hypertexnames=false}
 \begin{document}
 
 \section{Demo of proof-at-the-end}
