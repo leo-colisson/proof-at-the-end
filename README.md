@@ -602,6 +602,7 @@ but ensure that `amsthm` does not produce additional conflicts. This method will
 
 ## Changelog
 
+- 2026/01/12: Fix a bug that was not allowing stuff like `\cite[foo]{bar}` in theorem titles by introducing an extra group around the title
 - 2025/06/11: Add `text proof only theorem`
 - 2022/02/07:
   1. [issue 2](https://github.com/leo-colisson/proof-at-the-end/issues/2) was not really solved in fact... Now, I use a more robust method to detect the current section: I write in an AUX file the label of the proof section. This way, I don't need anymore to use dirty tricks to recover the section label.

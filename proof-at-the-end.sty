@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{proof-at-the-end}[2025/06/11 A package to move proofs in appendix]
+\ProvidesPackage{proof-at-the-end}[2026/01/12 A package to move proofs in appendix]
  
 \RequirePackage{etoolbox}
 \RequirePackage{thmtools}
@@ -262,12 +262,13 @@
 
 \NewDocumentEnvironment{theoremEndRestateBefore}{mO{}m+b}{
   \stepcounter{counterAllProofEnd}%
-  \protected@edef\currcounterval{\roman{counterAllProofEnd}}
-  \protected@edef\temprest{\noexpand\begin{restatable*}[#2]{#1}{prAtEndRestate\currcounterval}\noexpand\label{thm:prAtEnd\currcounterval}}%
+  \protected@edef\currcounterval{\roman{counterAllProofEnd}}%
   \expandafter\protected@xdef\csname #3\endcsname{\currcounterval}%
-  \temprest%
-    #4%
-  \end{restatable*}%
+  \expanded{%
+    \noexpand\begin{restatable*}[{\unexpanded{#2}}]{\unexpanded{#1}}{prAtEndRestate\currcounterval}\noexpand\label{thm:prAtEnd\currcounterval}%
+    \unexpanded{#4}%
+    \noexpand\end{restatable*}%
+  }%
 }{}
 
 \NewDocumentEnvironment{theoremEndOrig}{O{}mO{}+b}{
@@ -283,9 +284,6 @@
     #1
   }%
   \stepcounter{counterAllProofEnd}%
-  %% Pre-expand the restatable environment. Need protected
-  %% otherwise can't have $\mathtt{G}$ in the title 
-  \protected@edef\temprest{\noexpand\begin{restatable}[#3]{#2}{prAtEndRestate\roman{counterAllProofEnd}}}%
   %% Create the file if it's the first time
   \eraseIfNeeded{\category}%
   %% If the theorem must be written here:
@@ -297,10 +295,12 @@
     \fi%
     %%  Otherwise just state the theorem in a restatable environment
     \unless\ifrestatedbefore%
-      \temprest%
-        \label{thm:prAtEnd\roman{counterAllProofEnd}}%
-        #4%
-      \end{restatable}%
+      \expanded{% This {} ----------V is needed to allow stuff like \cite[foo]{bar}. Test also with $\mathtt{G}$
+        \noexpand\begin{restatable}[{\unexpanded{#3}}]{\unexpanded{#2}}{prAtEndRestate\roman{counterAllProofEnd}}%
+          \noexpand\label{thm:prAtEnd\roman{counterAllProofEnd}}%
+          \unexpanded{#4}%
+          \noexpand\end{restatable}%
+      }%
       %% Store the current (alpha value of the) counter
       %% in \pratendcountercurrent
       \protected@xdef\pratendcountercurrent{\roman{counterAllProofEnd}} %
