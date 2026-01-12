@@ -4,15 +4,14 @@ SRC_DIR:=$(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 # This package aims to provide a way to easily move proofs in the appendix. You can (among other) move proofs in different places/sections, create links from theorem to proofs, restate theorems, add comments in appendix...
 
 demo:
-	pdflatex demo.tex && pdflatex demo.tex
+	latexmk -pdf demo.tex
 
 quickstart:
 	pdflatex quickstart.tex && pdflatex quickstart.tex
 
-
 clean:
 	rm -rf buildpratend/
-	latexmk -C
+	latexmk -pdf -C
 	rm -f pratend*
 	rm -rf *.log
 
@@ -22,7 +21,7 @@ doc:
 	mkdir -p buildpratend/doc/
 	pandoc README.md author.yaml --lua-filter=promote-headers.lua --number-sections -f markdown --toc -t latex -s -o buildpratend/doc/proof-at-the-end_doc.tex
 	cp screenshot.png buildpratend/doc/
-	cd buildpratend/doc/ && pdflatex proof-at-the-end_doc.tex && pdflatex proof-at-the-end_doc.tex && cp proof-at-the-end_doc.pdf ../proof-at-the-end.pdf
+	cd buildpratend/doc/ && latexmk -pdf proof-at-the-end_doc.tex && cp proof-at-the-end_doc.pdf ../proof-at-the-end.pdf
 	@echo "Documentation built in buildpratend/proof-at-the-end.pdf"
 
 # Generates the package in buildpratend/proof-at-the-end.tar.gz
